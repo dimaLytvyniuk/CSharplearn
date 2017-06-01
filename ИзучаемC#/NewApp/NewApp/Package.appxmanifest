@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest">
+
+  <Identity Name="68b17eef-9c13-4136-a8e3-c3f042623d69"
+            Publisher="CN=Dima"
+            Version="1.0.0.0" />
+
+  <Properties>
+    <DisplayName>NewApp</DisplayName>
+    <PublisherDisplayName>Dima</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+  </Properties>
+
+  <Prerequisites>
+    <OSMinVersion>6.3.0</OSMinVersion>
+    <OSMaxVersionTested>6.3.0</OSMaxVersionTested>
+  </Prerequisites>
+
+  <Resources>
+    <Resource Language="x-generate"/>
+  </Resources>
+
+  <Applications>
+    <Application Id="App"
+        Executable="$targetnametoken$.exe"
+        EntryPoint="NewApp.App">
+        <m2:VisualElements
+            DisplayName="NewApp"
+            Square150x150Logo="Assets\Logo.png"
+            Square30x30Logo="Assets\SmallLogo.png"
+            Description="NewApp"
+            ForegroundText="light"
+            BackgroundColor="#464646">
+            <m2:SplashScreen Image="Assets\SplashScreen.png" />
+        </m2:VisualElements>
+    </Application>
+  </Applications>
+  <Capabilities>
+    <Capability Name="internetClient" />
+  </Capabilities>
+</Package>
