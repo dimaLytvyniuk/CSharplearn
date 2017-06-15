@@ -1,0 +1,59 @@
+﻿<Page
+    x:Class="GuySerializer.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GuySerializer"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    
+    <Page.Resources>
+        <local:GuyManager x:Name="guyManager"/>
+        <x:String x:Key="AppName">Guy Serializer</x:String>
+    </Page.Resources>
+    
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" DataContext="{StaticResource guyManager}" Margin="120,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <StackPanel>
+            <TextBlock Text="{Binding Joe}" Style="{StaticResource BaseTextBlockStyle}" Margin="0,0,0,20"/>
+            <Button x:Name="WritteJoe" Content="Write Joe" Click="WritteJoe_Click"/>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1">
+            <TextBlock Text="{Binding Bob}" Style="{StaticResource BaseTextBlockStyle}" Margin="0,0,0,20"/>
+            <Button x:Name="WritteBob" Content="Write Bob" Click="WritteBob_Click"/>
+        </StackPanel>
+
+        <StackPanel Grid.Column="2">
+            <TextBlock Text="{Binding Ed}" Style="{StaticResource BaseTextBlockStyle}" Margin="0,0,0,20"/>
+            <Button x:Name="WritteEd" Content="Write Ed" Click="WritteEd_Click"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="0,0,20,0">
+            <TextBlock Text="Last filename written"/>
+            <TextBox Text="{Binding Path, Mode=TwoWay}" Margin="0,0,0,20"/>
+            <TextBlock Text="Date created"/>
+            <TextBlock Text="{Binding LatestGuyFile.DateCreated}" Margin="0,0,0,20"
+                       Style="{StaticResource SubheaderTextBlockStyle}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Grid.Column="2">
+            <Button x:Name="ReadNewGuy" Content="Read a new Guy" Click="ReadNewGuy_Click" Margin="0,10,0,0"/>
+            <TextBlock Style="{StaticResource TitleTextBlockStyle}" Margin="0,0,0,20">
+                <Run>New Guy: </Run>
+                <Run Text="{Binding NewGuy}"/>
+            </TextBlock>
+        </StackPanel>
+        
+    </Grid>
+</Page>
