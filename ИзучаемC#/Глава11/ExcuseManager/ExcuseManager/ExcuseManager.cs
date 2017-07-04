@@ -73,8 +73,13 @@ namespace ExcuseManager
         public async void OpenRandomExcuseAsync()
         {
             IReadOnlyList<IStorageFile> files = await excuseFolder.GetFilesAsync();
-            excuseFile = files[random.Next(files.Count)];
-            await ReadExcuseAsync();
+            if (files.Count > 0)
+            {
+                excuseFile = files[random.Next(files.Count)];
+                await ReadExcuseAsync();
+            }
+            else
+                await new MessageDialog("No files in folder").ShowAsync();
         }
 
         private async Task UpdateFileDateAsync()
@@ -109,16 +114,68 @@ namespace ExcuseManager
 
         public async Task ReadExcuseAsync()
         {
-
+            if (excuseFile != null)
+            {
+                using (IRandomAccessStream stream = await excuseFile.OpenAsync(FileAccessMode.Read))
+                using (Stream inputStream = stream.AsStreamForRead())
+                {
+                    DataContractSerializer serializer = new DataContractSerializer(typeof(Excuse));
+                    try
+                    {
+                        CurrentExcuse = serializer.ReadObject(inputStream) as Excuse;
+                    }
+                    catch
+                    {
+                        new MessageDialog("IncorrectFile " + excuseFile.Name).ShowAsync();
+                        NewExcuseAsync();
+                        return;
+                    }
+                    finally
+                    {
+                        OnPropertyChanged("CurrentExcuse");
+                    }
+                }
+                await new MessageDialog("Changing in file" + excuseFile.Name).ShowAsync();
+                await UpdateFileDateAsync();
+            }
         }
 
         public async Task WriteExcuseAsync()
         {
-
+            if (CurrentExcuse != null)
+            {
+                using (IRandomAccessStream stream = await excuseFile.OpenAsync(FileAccessMode.ReadWrite))
+                using (Stream outputStream = stream.AsStreamForWrite())
+                {
+                    DataContractSerializer serializer = new DataContractSerializer(typeof(Excuse));
+                    serializer.WriteObject(outputStream, CurrentExcuse);
+                }
+                await new MessageDialog("Changing in file" + excuseFile.Name).ShowAsync();
+                OnPropertyChanged("CurrentExcuse");
+                await UpdateFileDateAsync();
+            }
         }
 
         public async void SaveCurrentExcuseAsAsync()
         {
+
+            FileSavePicker picker = new FileSavePicker
+            {
+                DefaultFileExtension = ".xml",
+                SuggestedStartLocation = PickerLocationId.MusicLibrary,
+                SuggestedFileName = CurrentExcuse.Description
+            };
+
+            picker.FileTypeChoices.Add("Text File", new List<String>() { ".txt" });
+            picker.FileTypeChoices.Add("XML File", new List<String>() { ".xml", ".xaml" });
+            excuseFile = await picker.PickSaveFileAsync();
+            if (excuseFile == null)
+            { 
+                await new MessageDialog("Incorrect file name").ShowAsync();
+                return;
+            }
+        
+            await WriteExcuseAsync();
 
         }
 

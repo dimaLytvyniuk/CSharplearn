@@ -14,7 +14,7 @@
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <StackPanel Margin="120,0,0,0" DataContext="{StaticResource ResourceKey = excuseManager}">
             <TextBlock Style="{StaticResource SubheaderTextBlockStyle}" Text="Excuse" Margin="0,0,0,10"/>
-            <TextBox Text="{Binding CurrentExcuese.Description, Mode=TwoWay}" Margin="0,0,20,20"/>
+            <TextBox Text="{Binding CurrentExcuse.Description, Mode=TwoWay}" Margin="0,0,20,20"/>
             <TextBlock Style="{StaticResource SubheaderTextBlockStyle}" Text="Results" Margin="0,0,0,10"/>
             <TextBox Text="{Binding CurrentExcuse.Results, Mode=TwoWay}" Margin="0,0,20,20"/>
             <TextBlock Style="{StaticResource SubheaderTextBlockStyle}" Text="Last used" Margin="0,0,0,10"/>
