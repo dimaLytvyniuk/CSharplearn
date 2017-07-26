@@ -1,0 +1,25 @@
+﻿<Application
+    x:Class="GimmyCollection.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GimmyCollection"
+    RequestedTheme="Light">
+    <Application.Resources>
+        <DataTemplate x:Key="Standard130ItemTemplate">
+            <Grid Height="110" Margin="6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}" Width="110" Height="110">
+                    <Image Source="{Binding Image}" Stretch="UniformToFill" AutomationProperties.Name="{Binding Title}"/>
+                </Border>
+                <StackPanel Grid.Column="1" VerticalAlignment="Top" Margin="10,0,0,0">
+                    <TextBlock Text="{Binding Title}" Style="{StaticResource TitleTextBlockStyle}" TextWrapping="NoWrap"/>
+                    <TextBlock Text="{Binding Subtitle}" Style="{StaticResource CaptionTextBlockStyle}" TextWrapping="NoWrap"/>
+                    <TextBlock Text="{Binding Description}" Style="{StaticResource BodyTextBlockStyle}" MaxHeight="60"/>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+    </Application.Resources>
+</Application>

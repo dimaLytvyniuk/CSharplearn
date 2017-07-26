@@ -1,0 +1,72 @@
+﻿<Page
+    x:Class="GimmyCollection.QueryDetailZoom"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GimmyCollection"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <local:ComicQueryManager x:Name="comicQueryManager"/>
+        <x:String x:Key="AppName">My Application</x:String>
+    </Page.Resources>
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid Margin="120,0" DataContext="{StaticResource ResourceKey=comicQueryManager}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Style="{StaticResource SubheaderTextBlockStyle}" Margin="0,0,0,20" Text="Pinch to zoom in or out"/>
+
+            <SemanticZoom IsZoomedInViewActive="True" Grid.Row="1" IsZoomOutButtonEnabled="True">
+                <SemanticZoom.ZoomedOutView>
+                    <ListView ItemsSource="{Binding CurrentQueryResults}" Margin="0,0,20,0" ItemTemplate="{StaticResource Standard130ItemTemplate}" SelectionMode="None"/>
+                </SemanticZoom.ZoomedOutView>
+
+                <SemanticZoom.ZoomedInView >
+                    <GridView ItemsSource="{Binding CurrentQueryResults}" Margin="0,0,20,0" SelectionMode="None" x:Name="detailGridView">
+                        <GridView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Height="780" Width="600" Margin="10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Image Source="{Binding Comic.Cover}" Margin="0,0,20,0" Stretch="UniformToFill" Width="326" Height="500" VerticalAlignment="Top"/>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="Name" Style="{StaticResource TitleTextBlockStyle}"/>
+                                        <TextBlock Text="{Binding Comic.Name}" Style="{StaticResource CaptionTextBlockStyle}"/>
+
+                                        <TextBlock Text="Issue" Style="{StaticResource TitleTextBlockStyle}"/>
+                                        <TextBlock Text="{Binding Comic.Issue}" Style="{StaticResource CaptionTextBlockStyle}"/>
+
+                                        <TextBlock Text="Year" Style="{StaticResource TitleTextBlockStyle}"/>
+                                        <TextBlock Text="{Binding Comic.Year}" Style="{StaticResource CaptionTextBlockStyle}"/>
+
+                                        <TextBlock Text="Cover Price" Style="{StaticResource TitleTextBlockStyle}"/>
+                                        <TextBlock Text="{Binding Comic.Coverprice}" Style="{StaticResource CaptionTextBlockStyle}"/>
+
+                                        <TextBlock Text="Main Villain" Style="{StaticResource TitleTextBlockStyle}"/>
+                                        <TextBlock Text="{Binding Comic.MainVillain}" Style="{StaticResource CaptionTextBlockStyle}"/>
+
+                                        <TextBlock Text="Synopsis" Style="{StaticResource TitleTextBlockStyle}"/>
+                                        <TextBlock Text="{Binding Comic.Synopsis}" Style="{StaticResource CaptionTextBlockStyle}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </GridView.ItemTemplate>
+                    </GridView>
+                </SemanticZoom.ZoomedInView>
+            </SemanticZoom>
+        </Grid>
+    </Grid>
+    
+    
+    
+    
+    
+    
+</Page>

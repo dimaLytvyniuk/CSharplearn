@@ -1,0 +1,31 @@
+﻿<Page
+    x:Class="GimmyCollection.QueryDetail"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GimmyCollection"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <local:ComicQueryManager x:Name="comicQueryManager"/>
+        <x:String x:Key="AppName">Query Detail</x:String>
+    </Page.Resources>
+    
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid Margin="120, 0" DataContext="{StaticResource ResourceKey=comicQueryManager}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBlock Style="{StaticResource SubheaderTextBlockStyle}"
+                       Text="Query results"
+                       Margin="10,0,0,20"
+             />
+            <ListView Grid.Row="1" Margin="0,-10,0,0" ItemsSource="{Binding CurrentQueryResults}"
+                      ItemTemplate="{StaticResource Standard130ItemTemplate}"
+                      SelectionMode="None"
+            />
+        </Grid>
+    </Grid>
+</Page>
