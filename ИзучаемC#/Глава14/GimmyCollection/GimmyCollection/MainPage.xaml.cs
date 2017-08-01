@@ -32,6 +32,7 @@ namespace GimmyCollection
             ComicQuery query = e.ClickedItem as ComicQuery;
             if (query != null)
             {
+                SuspensionManager.CurrentQuery = query.Tittle;
                 if (query.Tittle == "All comics in the collection")
                     this.Frame.Navigate(typeof(QueryDetailZoom), query);
                 else

@@ -26,5 +26,10 @@ namespace BallEvents
         {
             this.InitializeComponent();
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            baseballSimulator.PlayBall();
+        }
     }
 }

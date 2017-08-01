@@ -23,12 +23,15 @@ namespace BallEvents
         {
             pitcher = new Pitcher(ball);
             fan = new Fan(ball);
+            Trajectory = 30;
+            Distance = 120;
         }
 
         public void PlayBall()
         {
+            Bat bat = ball.GetNewBat();
             BallEventArgs ballEventArgs = new BallEventArgs(Trajectory, Distance);
-            ball.OnBallInPlay(ballEventArgs);
+            bat.HitTheBall(ballEventArgs);
         }
     }
 }

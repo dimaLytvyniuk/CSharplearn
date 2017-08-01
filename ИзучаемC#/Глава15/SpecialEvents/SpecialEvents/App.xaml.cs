@@ -15,7 +15,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-namespace GimmyCollection
+namespace SpecialEvents
 {
     /// <summary>
     /// Обеспечивает зависящее от конкретного приложения поведение, дополняющее класс Application по умолчанию.
@@ -37,7 +37,7 @@ namespace GimmyCollection
         /// например, если приложение запускается для открытия конкретного файла.
         /// </summary>
         /// <param name="e">Сведения о запросе и обработке запуска.</param>
-        protected async override void OnLaunched(LaunchActivatedEventArgs e)
+        protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
             Frame rootFrame = Window.Current.Content as Frame;
 
@@ -50,9 +50,9 @@ namespace GimmyCollection
 
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
-                if (e.PreviousExecutionState == ApplicationExecutionState.NotRunning)
+                if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
-                    await SuspensionManager.RestoreAsync();
+                    //TODO: Загрузить состояние из ранее приостановленного приложения
                 }
 
                 // Размещение фрейма в текущем окне
@@ -67,25 +67,6 @@ namespace GimmyCollection
                     // настройка новой страницы путем передачи необходимой информации в качестве параметра
                     // параметр
                     rootFrame.Navigate(typeof(MainPage), e.Arguments);
-
-                    if (!String.IsNullOrEmpty(SuspensionManager.CurrentQuery))
-                    {
-                        var currentQuerySequence = from query in new ComicQueryManager().AvaliableQueries
-                                                   where query.Tittle == SuspensionManager.CurrentQuery
-                                                   select query;
-
-                        if (currentQuerySequence.Count() == 1)
-                        {
-                            ComicQuery query = currentQuerySequence.First();
-                            if (query != null)
-                            {
-                                if (query.Tittle == "All comics in  the collection")
-                                    rootFrame.Navigate(typeof(QueryDetailZoom), query);
-                                else
-                                    rootFrame.Navigate(typeof(QueryDetail), query);
-                            }
-                        }
-                    }
                 }
                 // Обеспечение активности текущего окна
                 Window.Current.Activate();
@@ -109,10 +90,10 @@ namespace GimmyCollection
         /// </summary>
         /// <param name="sender">Источник запроса приостановки.</param>
         /// <param name="e">Сведения о запросе приостановки.</param>
-        private async void OnSuspending(object sender, SuspendingEventArgs e)
+        private void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
-            await SuspensionManager.SaveAsync();
+            //TODO: Сохранить состояние приложения и остановить все фоновые операции
             deferral.Complete();
         }
     }

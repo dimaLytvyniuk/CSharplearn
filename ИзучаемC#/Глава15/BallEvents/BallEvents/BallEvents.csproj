@@ -98,6 +98,7 @@
     <Compile Include="Ball.cs" />
     <Compile Include="BallEventArgs.cs" />
     <Compile Include="BAseballSimulator.cs" />
+    <Compile Include="Bat.cs" />
     <Compile Include="Fan.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
