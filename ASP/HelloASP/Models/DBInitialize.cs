@@ -8,8 +8,8 @@ namespace HelloASP.Models
     {
         public static void EnsureCreated(IServiceProvider serviceProvider)
         {
-            var service = serviceProvider.GetRequiredService<DbContextOptions<MvcMovieContext>>();
-            var context = new MvcMovieContext(serviceProvider.GetRequiredService<DbContextOptions<MvcMovieContext>>());
+            var context = new MvcMovieContext(
+                serviceProvider.GetRequiredService<DbContextOptions<MvcMovieContext>>());
             context.Database.EnsureCreated();
         }
     }
