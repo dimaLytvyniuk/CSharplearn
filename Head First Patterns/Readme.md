@@ -1,4 +1,5 @@
 #About patterns
 
 DucksQuackandFly - паттерн стратегия
-![Alt text](Part 1/strategy.png)
+
+![Alt text](Part_1/strategy.png)
