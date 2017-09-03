@@ -6,18 +6,20 @@ namespace AVLTree
 {
     class AVLSet<T> : ISet<T>
     {
-        private int size;
+        private int _size;
+        private int _height;
+        public int Count { get { return _size; } }
+        public int Height { get { return _height; }  }
 
-        public int Count { get; private set; }
-
-        private Node<T> head;
+        private Node<T> _head;
 
         public bool IsReadOnly => false;
 
 
         public bool Add(T item)
         {
-            throw new NotImplementedException();
+
+            return false;
         }
 
         public void ExceptWith(IEnumerable<T> other)
@@ -103,6 +105,59 @@ namespace AVLTree
         IEnumerator IEnumerable.GetEnumerator()
         {
             throw new NotImplementedException();
+        }
+
+        private Node<T> aVLTreeInsert(Node<T> root, T data) 
+        {
+            return null;
+        }
+
+        private static int HeightOfTree(Node<T> root)
+        {
+            int leftHeight;
+            int rightHeight;
+
+            if (root == null)
+                return 0;
+
+            leftHeight = HeightOfTree(root.Left);
+            rightHeight = HeightOfTree(root.Right);
+
+            if (leftHeight > rightHeight)
+                return ++leftHeight;
+            else
+                return ++rightHeight;
+            
+        }
+
+        private static Node<T> SingleRotateLeft(Node<T> node)
+        {
+            Node<T> leftNode = node.Left;
+            node.Left = leftNode.Right;
+            leftNode.Right = node;
+            node.Height = Max(HeightOfTree(node.Left), HeightOfTree(node.Right)) + 1;
+            leftNode.Height = Max(HeightOfTree(leftNode.Left), node.Height) + 1;
+            return leftNode; 
+        }
+
+        private static Node<T> SingleRotateRight(Node<T> node)
+        {
+            Node<T> rightNode = node.Right;
+            node.Right = rightNode.Left;
+            rightNode.Left = node;
+            node.Height = Max(HeightOfTree(node.Left), HeightOfTree(node.Right)) + 1;
+            rightNode.Height = Max(node.Height, HeightOfTree(rightNode.Right)) + 1;
+            return rightNode;
+        }
+
+        private static Node<T> DoubleRotateRL(Node<T> node)
+        {
+            node.Left = SingleRotateRight(node.Left);
+            return SingleRotateLeft(node);
+        }
+        private static int Max(int x, int y)
+        {
+            return x > y ? x : y;
         }
     }
 }
