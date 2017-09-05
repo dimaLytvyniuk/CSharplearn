@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace AVLTree
 {
-    class AVLSet<T> : ISet<T>
+    class AVLSet<T> : ISet<T> 
     {
         private int _size;
         private int _height;
@@ -107,9 +107,16 @@ namespace AVLTree
             throw new NotImplementedException();
         }
 
-        private Node<T> aVLTreeInsert(Node<T> root, T data) 
+        private Node<T> AVLTreeInsert(Node<T> root, IComparable data) 
         {
-            return null;
+            if (root == null)
+            {
+                root = new Node<T>(data, null, null, 0);
+            }
+            else if (data.CompareTo(root.Data) < 0)
+            {
+                root.Left = av
+            }
         }
 
         private static int HeightOfTree(Node<T> root)
@@ -150,10 +157,16 @@ namespace AVLTree
             return rightNode;
         }
 
-        private static Node<T> DoubleRotateRL(Node<T> node)
+        private static Node<T> DoubleRotateLR(Node<T> node)
         {
             node.Left = SingleRotateRight(node.Left);
             return SingleRotateLeft(node);
+        }
+
+        private static Node<T> DoubleRotateRL(Node<T> node)
+        {
+            node.Right = SingleRotateLeft(node.Right);
+            return SingleRotateRight(node); 
         }
         private static int Max(int x, int y)
         {
