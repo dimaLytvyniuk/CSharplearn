@@ -115,7 +115,8 @@ namespace AVLTree
             }
             else if (data.CompareTo(root.Data) < 0)
             {
-                root.Left = av
+                root.Left = AVLTreeInsert(root.Left, data);
+                if ((HeightOfTree(root.Left) - HeightOfTree(root.Right)) == 2)
             }
         }
 
