@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace AVLTree
 {
-    class AVLSet<T> : ISet<T> 
+    class AVLSet<T> : ISet<T> where T: IComparable
     {
         private int _size;
         private int _height;
@@ -18,8 +18,8 @@ namespace AVLTree
 
         public bool Add(T item)
         {
-
-            return false;
+            _head = AVLTreeInsert(_head, item);
+            return true;
         }
 
         public void ExceptWith(IEnumerable<T> other)
@@ -107,7 +107,7 @@ namespace AVLTree
             throw new NotImplementedException();
         }
 
-        private Node<T> AVLTreeInsert(Node<T> root, IComparable data) 
+        private Node<T> AVLTreeInsert(Node<T> root, T data) 
         {
             if (root == null)
             {
@@ -117,11 +117,32 @@ namespace AVLTree
             {
                 root.Left = AVLTreeInsert(root.Left, data);
                 if ((HeightOfTree(root.Left) - HeightOfTree(root.Right)) == 2)
+                {
+                    if (data.CompareTo(root.Left.Data) < 0)
+                        root = SingleRotateLeft(root);
+                    else
+                        root = DoubleRotateLR(root);
+                }
             }
+            else if (data.CompareTo(root.Data) > 0)
+            {
+                root.Right = AVLTreeInsert(root.Right, data);
+                if ((HeightOfTree(root.Right) - HeightOfTree(root.Left)) == 2)
+                {
+                    if (data.CompareTo(root.Right.Data) < 0)
+                        root = SingleRotateRight(root);
+                    else
+                        root = DoubleRotateRL(root);
+                }            
+            }
+
+            root.Height = Max(HeightOfTree(root.Left), HeightOfTree(root.Right)) + 1;
+            return root;
         }
 
         private static int HeightOfTree(Node<T> root)
         {
+            /* 
             int leftHeight;
             int rightHeight;
 
@@ -135,29 +156,34 @@ namespace AVLTree
                 return ++leftHeight;
             else
                 return ++rightHeight;
+            */
+            if (root == null)
+                return -1;
             
+            return root.Height;
         }
 
         private static Node<T> SingleRotateLeft(Node<T> node)
         {
             Node<T> leftNode = node.Left;
-            node.Left = leftNode.Right;
+            node.Left = leftNode?.Right;
             leftNode.Right = node;
             node.Height = Max(HeightOfTree(node.Left), HeightOfTree(node.Right)) + 1;
-            leftNode.Height = Max(HeightOfTree(leftNode.Left), node.Height) + 1;
+            leftNode.Height = Max(HeightOfTree(leftNode?.Left), node.Height) + 1;
             return leftNode; 
         }
 
         private static Node<T> SingleRotateRight(Node<T> node)
         {
             Node<T> rightNode = node.Right;
-            node.Right = rightNode.Left;
+            node.Right = rightNode?.Left;
             rightNode.Left = node;
             node.Height = Max(HeightOfTree(node.Left), HeightOfTree(node.Right)) + 1;
-            rightNode.Height = Max(node.Height, HeightOfTree(rightNode.Right)) + 1;
+            rightNode.Height = Max(node.Height, HeightOfTree(rightNode?.Right)) + 1;
             return rightNode;
         }
 
+        //DoubleRotateLeft
         private static Node<T> DoubleRotateLR(Node<T> node)
         {
             node.Left = SingleRotateRight(node.Left);
