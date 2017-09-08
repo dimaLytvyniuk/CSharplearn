@@ -12,6 +12,7 @@ namespace AVLTree
             avlSet.Add(new Box(4));
             avlSet.Add(new Box(7));
             avlSet.Add(new Box(8));
+            //avlSet.Add(new Box(9));
             int y = 0;
         }
     }
