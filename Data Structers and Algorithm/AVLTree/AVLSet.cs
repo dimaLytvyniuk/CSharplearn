@@ -129,7 +129,7 @@ namespace AVLTree
                 root.Right = AVLTreeInsert(root.Right, data);
                 if ((HeightOfTree(root.Right) - HeightOfTree(root.Left)) == 2)
                 {
-                    if (data.CompareTo(root.Right.Data) < 0)
+                    if (data.CompareTo(root.Right.Data) > 0)
                         root = SingleRotateRight(root);
                     else
                         root = DoubleRotateRL(root);
