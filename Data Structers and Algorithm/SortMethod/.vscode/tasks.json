@@ -7,7 +7,7 @@
         {
             "taskName": "build",
             "args": [
-                "${workspaceRoot}/SortMethod.csproj"
+                "${workspaceRoot}/Test/Test.csproj"
             ],
             "isBuildCommand": true,
             "problemMatcher": "$msCompile"
