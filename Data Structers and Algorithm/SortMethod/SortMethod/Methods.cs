@@ -11,9 +11,9 @@ namespace SortMethod
 /// <param name="a">массив</param>
 /// <param name="i">индекс первого элемента</param>
 /// <param name="j">индекс второго элемета</param>
-        private static void swap(int[] a, int i, int j)
+        private static void swap<T>(T[] a, int i, int j)
         {
-            int prom = a[i];
+            T prom = a[i];
             a[i] = a[j];
             a[j] = prom;
         }
@@ -30,7 +30,7 @@ namespace SortMethod
 /// <param name="a">Сортируемый массив</param>
 /// <param name="low">Индекс начала отрезка</param>
 /// <param name="high">Индекс конца отрезка</param>
-        public static void QuickSort(int[] a, int low, int high)
+        public static void QuickSort<T> (T[] a, int low, int high) where T: IComparable
         {
             if (high > low)
             {
@@ -45,16 +45,17 @@ namespace SortMethod
 /// <param name="a">Сортируемый массив</param>
 /// <param name="low">Индекс начала отрезка</param>
 /// <param name="high">Индекс конца отрезка</param>
-        private static int Partition(int[] a, int low, int high)
+        private static int Partition<T>(T[] a, int low, int high) where T: IComparable
         {
             int pivot_index = ((high - low) / 2) + low;
             int wall = low;
-            int pivot = a[pivot_index];
+            T pivot = a[pivot_index];
             swap(a, pivot_index, high);
 
             for (int i = low; i < high; i++)
             {
-                if (a[i] <= pivot)
+                //if (a[i] <= pivot)
+                if (pivot.CompareTo(a[i]) > 0)
                 {
                     swap(a, wall, i);
                     wall++;
