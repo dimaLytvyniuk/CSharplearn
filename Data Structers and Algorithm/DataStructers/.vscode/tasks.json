@@ -7,7 +7,7 @@
         {
             "taskName": "build",
             "args": [
-                "${workspaceRoot}/Heap.csproj"
+                "${workspaceRoot}/DataStructers.Test/DataStructers.Test.csproj"
             ],
             "isBuildCommand": true,
             "problemMatcher": "$msCompile"
