@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace EnglishProject.Models
 {
@@ -8,7 +9,15 @@ namespace EnglishProject.Models
         public TaskType TaskType { get; set; }
         public GrammarPart GrammarPart { get; set; }
         public EnglishLevel EnglishLevel { get; set; }
-        public int Count { get; set; }
+        
+        [Required]
+        public uint Count { get; set; }
+        public string Example { get; set; }
+        
+        [Required]
         public string Text { get; set; }
+        
+        [Required]
+        public string Answer { get; set; }
     }
 }

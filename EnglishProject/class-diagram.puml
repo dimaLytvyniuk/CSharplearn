@@ -15,7 +15,9 @@ class Task {
     GrammarPart grammarPart
     EnglishLevel englishLevel
     int count
+    string example
     string text
+    string answer
 }
 
 class TaskInfo{
