@@ -1,0 +1,64 @@
+@page
+@model EnglishProject.Pages.EnglishTasks.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Create</h2>
+
+<h4>EnglishTask</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="EnglishTask.TaskType" class="control-label"></label>
+                <select asp-for="EnglishTask.TaskType" class="form-control"></select>
+                <span asp-validation-for="EnglishTask.TaskType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EnglishTask.GrammarPart" class="control-label"></label>
+                <select asp-for="EnglishTask.GrammarPart" class="form-control"></select>
+                <span asp-validation-for="EnglishTask.GrammarPart" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EnglishTask.EnglishLevel" class="control-label"></label>
+                <select asp-for="EnglishTask.EnglishLevel" class="form-control"></select>
+                <span asp-validation-for="EnglishTask.EnglishLevel" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EnglishTask.Count" class="control-label"></label>
+                <input asp-for="EnglishTask.Count" class="form-control" />
+                <span asp-validation-for="EnglishTask.Count" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EnglishTask.Example" class="control-label"></label>
+                <input asp-for="EnglishTask.Example" class="form-control" />
+                <span asp-validation-for="EnglishTask.Example" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EnglishTask.Text" class="control-label"></label>
+                <input asp-for="EnglishTask.Text" class="form-control" />
+                <span asp-validation-for="EnglishTask.Text" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EnglishTask.Answer" class="control-label"></label>
+                <input asp-for="EnglishTask.Answer" class="form-control" />
+                <span asp-validation-for="EnglishTask.Answer" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

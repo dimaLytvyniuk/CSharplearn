@@ -1,0 +1,46 @@
+@page
+@model EnglishProject.Pages.TaskInfos.DeleteModel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>TaskInfo</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.TaskInfo.EnglishTaskID)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TaskInfo.EnglishTaskID)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TaskInfo.CorrectAnswers)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TaskInfo.CorrectAnswers)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TaskInfo.DateComplete)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TaskInfo.DateComplete)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.TaskInfo.InCourse)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TaskInfo.InCourse)
+        </dd>
+    </dl>
+    
+    <form method="post">
+        <input type="hidden" asp-for="TaskInfo.ID" />
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <a asp-page="./Index">Back to List</a>
+    </form>
+</div>

@@ -2,7 +2,7 @@ using System;
 
 namespace EnglishProject.Models
 {
-    public enum GrammarPart
+    public enum GrammarPart : byte
     {
         PRSimple,
         PRContinuous

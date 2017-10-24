@@ -1,6 +1,8 @@
 using System;
+using System.Text;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EnglishProject.Models
 {
@@ -20,6 +22,36 @@ namespace EnglishProject.Models
         public string Email { get; set; }
         public bool HasCourse { get; set; }
         public ICollection<TaskInfo> ComplitedTaskHistory { get; set; }
-        public ICollection<DateTime> LoginingHistory { get; set; }
+        
+        [NotMapped]
+        public List<DateTime> LoginingHistory { get; set; }
+
+         
+        public string LoginingHistoryArray
+        {
+            get
+            {
+                string str = String.Empty;
+                if (LoginingHistory.Count > 0)
+                {
+                    foreach (DateTime date in LoginingHistory)
+                        str += date.ToString() + "_";
+                }
+
+                return str;
+            }
+
+            set
+            {
+                LoginingHistory = new List<DateTime>();
+                string[] strs = value.Split("_");
+                foreach(string val in strs)
+                {
+                    DateTime date;
+                    if (DateTime.TryParse(val.ToString(), out date))
+                        LoginingHistory.Add(date);
+                }
+            }
+        }
     }
 }

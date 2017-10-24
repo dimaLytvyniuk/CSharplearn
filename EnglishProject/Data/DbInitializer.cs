@@ -10,32 +10,32 @@ namespace EnglishProject.Data
         public static void Initialize(EnglishContext context)
         {
             context.Database.EnsureCreated();
-
-            if (context.Users.Any())
+             
+            if (context.User.Any())
             {
                 return;
             }
 
 
-            var tasks = new Task[]
+            var tasks = new EnglishTask[]
             {
-                new Task{ID=1,TaskType=TaskType.CorrectAlternative,GrammarPart=GrammarPart.PRContinuous,EnglishLevel=EnglishLevel.Advanced,Count=10,Text="adaaaad",Answer="dajds",Example=null},
-                new Task{ID=2,TaskType=TaskType.CorrectOrder,GrammarPart=GrammarPart.PRSimple,EnglishLevel=EnglishLevel.PreIntermediate,Count=10,Text="dsafasad",Example="dkjas",Answer="dssad"}
+                new EnglishTask{ID=1,TaskType=TaskType.CorrectAlternative,GrammarPart=GrammarPart.PRContinuous,EnglishLevel=EnglishLevel.Advanced,Count=10,Text="adaaaad",Answer="dajds",Example=null},
+                new EnglishTask{ID=2,TaskType=TaskType.CorrectOrder,GrammarPart=GrammarPart.PRSimple,EnglishLevel=EnglishLevel.PreIntermediate,Count=10,Text="dsafasad",Example="dkjas",Answer="dssad"}
             };
-            foreach (Task t in tasks)
+            foreach (EnglishTask t in tasks)
             {
-                context.Tasks.Add(t);
+                context.EnglishTask.Add(t);
             }
             context.SaveChanges();
 
             List<TaskInfo> taskInfos = new List<TaskInfo>
             {
-                new TaskInfo{UserID=1,TaskID=1,CorrectAnswers=10,DateComplete=DateTime.Now,InCourse=true},
-                new TaskInfo{UserID=1,TaskID=2,CorrectAnswers=8,DateComplete=DateTime.Now,InCourse=false}
+                new TaskInfo{UserID=1,EnglishTaskID=1,CorrectAnswers=10,DateComplete=DateTime.Now,InCourse=true},
+                new TaskInfo{UserID=1,EnglishTaskID=2,CorrectAnswers=8,DateComplete=DateTime.Now,InCourse=false}
             };
             foreach (TaskInfo tInfo in taskInfos)
             {
-                context.TaskInfos.Add(tInfo);
+                context.TaskInfo.Add(tInfo);
             }
             context.SaveChanges();
 
@@ -52,7 +52,7 @@ namespace EnglishProject.Data
             };
             foreach (User user in users)
             {
-                context.Users.Add(user);
+                context.User.Add(user);
             }
             context.SaveChanges();
 
@@ -68,10 +68,10 @@ namespace EnglishProject.Data
             };
             foreach (Course c in courses)
             {
-                context.Courses.Add(c);
+                context.Course.Add(c);
             }
             context.SaveChanges();
-
+            
         }
     }
 }

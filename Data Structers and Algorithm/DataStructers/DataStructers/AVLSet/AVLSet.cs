@@ -8,8 +8,8 @@ namespace DataStructers.AVLSet
     {
         private int _size;
         private int _height;
-        public int Count { get { return _size; } }
-        public int Height { get { return _height; }  }
+        public int Count { get => _size; }
+        public int Height { get => _height; }
 
         private Node<T> _head;
 

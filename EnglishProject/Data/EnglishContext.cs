@@ -10,16 +10,16 @@ namespace EnglishProject.Data
         {
         }
 
-        public DbSet<Course> Courses { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<Task> Tasks { get; set; }
-        public DbSet<TaskInfo> TaskInfos { get; set; }
+        public DbSet<Course> Course { get; set; }
+        public DbSet<User> User { get; set; }
+        public DbSet<EnglishTask> EnglishTask { get; set; }
+        public DbSet<TaskInfo> TaskInfo { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Course>().ToTable("Course");
             modelBuilder.Entity<User>().ToTable("User");
-            modelBuilder.Entity<Task>().ToTable("Task");
+            modelBuilder.Entity<EnglishTask>().ToTable("EnglishTask");
             modelBuilder.Entity<TaskInfo>().ToTable("TaskInfo");
         }
     }

@@ -5,11 +5,12 @@ namespace EnglishProject.Models
 {
     public class TaskInfo
     {
+        public int ID { get; set; }
         [Required]
         public int UserID { get; set; }
         
         [Required]
-        public int TaskID { get; set; }
+        public int EnglishTaskID { get; set; }
         
         [Required]
         public int CorrectAnswers { get; set; }

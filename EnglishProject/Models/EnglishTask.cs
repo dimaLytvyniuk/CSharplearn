@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EnglishProject.Models
 {
-    public class Task
+    public class EnglishTask
     {
         public int ID { get; set; }
         public TaskType TaskType { get; set; }
@@ -11,7 +11,7 @@ namespace EnglishProject.Models
         public EnglishLevel EnglishLevel { get; set; }
         
         [Required]
-        public uint Count { get; set; }
+        public int Count { get; set; }
         public string Example { get; set; }
         
         [Required]
