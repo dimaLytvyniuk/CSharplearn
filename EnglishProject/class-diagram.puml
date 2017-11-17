@@ -1,0 +1,80 @@
+@startuml
+class User {
+    int id;
+    string login
+    string password
+    string email
+    bool hasCourse
+    List<TaskInfo> complitedTaskHistory
+    List<DateTime> loginingHistory
+}
+
+class Task {
+    int id
+    TaskType taskType
+    GrammarPart grammarPart
+    EnglishLevel englishLevel
+    int count
+    string example
+    string text
+    string answer
+}
+
+class TaskInfo{
+    int taskId
+    int correctAnswers
+    DateTime dateComplete
+    bool inCourse
+}
+
+class Course {
+    int id
+    EnglishLevel level
+    List<GrammarPart> partsWhichWantStudy
+    List<GrammarPart> partsToLearn
+    List<int> completedTasks
+}
+enum GrammarPart {
+
+}
+
+enum EnglishLevel {
+    Elementary
+    Pre-Intermediate
+    Intermediate
+    UpperIntermediate
+    Advanced
+}
+
+enum TaskType {
+    SimpleBrackets
+    WordsFromBox
+    CorrectAlternative
+    CorrectOrder
+    DivisionBySlash
+}
+note bottom
+SimpleBracets: (Example)My friend_(have) a horse.
+WordsFromBox: Complete the sentences with
+the correct words from the box
+CorrectAlternative:  (Example)  <i>I see you/I'll see you</i>  later.
+CorrectOrder: (Example) is/bithday/when/your?
+DivisionBySlash: (Example)If Shaune/do yoga/she/feel hapier
+end note
+
+
+together {
+    enum TaskType
+    enum GrammarPart
+    enum EnglishLevel
+}
+
+together {
+    class User
+    class UserStatistic
+    class Task
+    class TaskInfo
+    class Course
+}
+
+@endumld
