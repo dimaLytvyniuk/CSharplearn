@@ -10,7 +10,8 @@ namespace CodeWars
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(factors(7775460));
+            int[] result = nbMonths(2000, 8000, 1000, 1.5);
+            Console.WriteLine(result[0] + " " + result[1]);
         }
 
         public static String factors(int lst)
@@ -55,6 +56,29 @@ namespace CodeWars
             }
 
             return number;
+        }
+
+        public static int[] nbMonths(int startPriceOld, int startPriceNew, int savingperMonth, double percentLossByMonth)
+        {
+            if (startPriceOld > startPriceNew)
+                return new int[] { 0, (startPriceOld - startPriceNew) };
+            if (startPriceOld == startPriceNew)
+                return new int[] { 0, 0 };
+
+            int month = 0;
+            double savedMoney = 0;
+            double priceOld = startPriceOld;
+            double priceNew = startPriceNew;
+            while ((savedMoney + priceOld) < priceNew)
+            {
+                month++;
+                savedMoney += savingperMonth;
+                priceOld -= priceOld * percentLossByMonth;
+                priceNew -= priceNew * percentLossByMonth;
+                percentLossByMonth += month % 2 == 0 ? 0.5 : 0;
+            }
+
+            return new int[] { month, (int)((savedMoney + priceOld) - priceNew) };
         }
     }
 }

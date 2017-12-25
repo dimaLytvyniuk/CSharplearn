@@ -20,6 +20,8 @@ namespace EnglishProject.Models
         
         [Required]
         public string Email { get; set; }
+
+        [Display(Name = "Has Course")]
         public bool HasCourse { get; set; }
         public ICollection<TaskInfo> ComplitedTaskHistory { get; set; }
         
@@ -32,7 +34,7 @@ namespace EnglishProject.Models
             get
             {
                 string str = String.Empty;
-                if (LoginingHistory.Count > 0)
+                if (LoginingHistory != null)
                 {
                     foreach (DateTime date in LoginingHistory)
                         str += date.ToString() + "_";
@@ -43,13 +45,16 @@ namespace EnglishProject.Models
 
             set
             {
-                LoginingHistory = new List<DateTime>();
-                string[] strs = value.Split("_");
-                foreach(string val in strs)
+                if (value != null)
                 {
-                    DateTime date;
-                    if (DateTime.TryParse(val.ToString(), out date))
-                        LoginingHistory.Add(date);
+                    LoginingHistory = new List<DateTime>();
+                    string[] strs = value.Split("_");
+                    foreach (string val in strs)
+                    {
+                        DateTime date;
+                        if (DateTime.TryParse(val.ToString(), out date))
+                            LoginingHistory.Add(date);
+                    }
                 }
             }
         }
