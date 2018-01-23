@@ -17,11 +17,12 @@ const { AngularCompilerPlugin } = require('@ngtools/webpack');
 
 const nodeModules = path.join(process.cwd(), 'node_modules');
 const realNodeModules = fs.realpathSync(nodeModules);
-const genDirNodeModules = path.join(process.cwd(), 'true', '$$_gendir', 'node_modules');
+const genDirNodeModules = path.join(process.cwd(), 'ClientApp', '$$_gendir', 'node_modules');
 const entryPoints = ["inline","polyfills","sw-register","styles","vendor","main"];
 const minimizeCss = false;
 const baseHref = "";
 const deployUrl = "";
+const projectRoot = "F:\\C\\DIMA\\CSharplearn\\ASP\\AngularCore\\SportsStore";
 const postcssPlugins = function () {
         // safe settings based on: https://github.com/ben-eb/cssnano/issues/358#issuecomment-283696193
         const importantCommentRe = /@preserve|@licen[cs]e|[@#]\s*source(?:Mapping)?URL|^!/i;
@@ -32,6 +33,10 @@ const postcssPlugins = function () {
             discardComments: { remove: (comment) => !importantCommentRe.test(comment) }
         };
         return [
+            postcssUrl({
+                filter: ({ url }) => url.startsWith('~'),
+                url: ({ url }) => path.join(projectRoot, 'node_modules', url.substr(1)),
+            }),
             postcssUrl([
                 {
                     // Only convert root relative URLs, which CSS-Loader won't process into require().
@@ -96,20 +101,21 @@ module.exports = {
   },
   "entry": {
     "main": [
-      "./true/main.ts"
+      "./ClientApp\\main.ts"
     ],
     "polyfills": [
-      "./true/polyfills.ts"
+      "./ClientApp\\polyfills.ts"
     ],
     "styles": [
-      "./true/styles.css"
+      "./ClientApp\\styles.css"
     ]
   },
   "output": {
-    "path": path.join(process.cwd(), "dist"),
+    "path": path.join(process.cwd(), "wwwroot/dist"),
     "filename": "[name].bundle.js",
     "chunkFilename": "[id].chunk.js",
-    "crossOriginLoading": false
+    "crossOriginLoading": false,
+    "publicPath": "/app/"
   },
   "module": {
     "rules": [
@@ -135,7 +141,7 @@ module.exports = {
       },
       {
         "exclude": [
-          path.join(process.cwd(), "true/styles.css")
+          path.join(process.cwd(), "ClientApp\\styles.css")
         ],
         "test": /\.css$/,
         "use": [
@@ -159,7 +165,7 @@ module.exports = {
       },
       {
         "exclude": [
-          path.join(process.cwd(), "true/styles.css")
+          path.join(process.cwd(), "ClientApp\\styles.css")
         ],
         "test": /\.scss$|\.sass$/,
         "use": [
@@ -191,7 +197,7 @@ module.exports = {
       },
       {
         "exclude": [
-          path.join(process.cwd(), "true/styles.css")
+          path.join(process.cwd(), "ClientApp\\styles.css")
         ],
         "test": /\.less$/,
         "use": [
@@ -221,7 +227,7 @@ module.exports = {
       },
       {
         "exclude": [
-          path.join(process.cwd(), "true/styles.css")
+          path.join(process.cwd(), "ClientApp\\styles.css")
         ],
         "test": /\.styl$/,
         "use": [
@@ -252,7 +258,7 @@ module.exports = {
       },
       {
         "include": [
-          path.join(process.cwd(), "true/styles.css")
+          path.join(process.cwd(), "ClientApp\\styles.css")
         ],
         "test": /\.css$/,
         "use": [
@@ -276,7 +282,7 @@ module.exports = {
       },
       {
         "include": [
-          path.join(process.cwd(), "true/styles.css")
+          path.join(process.cwd(), "ClientApp\\styles.css")
         ],
         "test": /\.scss$|\.sass$/,
         "use": [
@@ -308,7 +314,7 @@ module.exports = {
       },
       {
         "include": [
-          path.join(process.cwd(), "true/styles.css")
+          path.join(process.cwd(), "ClientApp\\styles.css")
         ],
         "test": /\.less$/,
         "use": [
@@ -338,7 +344,7 @@ module.exports = {
       },
       {
         "include": [
-          path.join(process.cwd(), "true/styles.css")
+          path.join(process.cwd(), "ClientApp\\styles.css")
         ],
         "test": /\.styl$/,
         "use": [
@@ -377,7 +383,7 @@ module.exports = {
     new NoEmitOnErrorsPlugin(),
     new CopyWebpackPlugin([
       {
-        "context": "true",
+        "context": "ClientApp",
         "to": "",
         "from": {
           "glob": "assets/**/*",
@@ -385,7 +391,7 @@ module.exports = {
         }
       },
       {
-        "context": "true",
+        "context": "ClientApp",
         "to": "",
         "from": {
           "glob": "favicon.ico",
@@ -405,11 +411,11 @@ module.exports = {
       "exclude": /(\\|\/)node_modules(\\|\/)/,
       "failOnError": false,
       "onDetected": false,
-      "cwd": "/media/dima/F268AC7168AC366F/C/DIMA/CSharplearn/ASP/AngularCore/SportsStore"
+      "cwd": "F:\\C\\DIMA\\CSharplearn\\ASP\\AngularCore\\SportsStore"
     }),
     new NamedLazyChunksWebpackPlugin(),
     new HtmlWebpackPlugin({
-      "template": "./true/index.html",
+      "template": "./ClientApp\\index.html",
       "filename": "./index.html",
       "hash": false,
       "inject": true,
@@ -475,10 +481,10 @@ module.exports = {
       "mainPath": "main.ts",
       "platform": 0,
       "hostReplacementPaths": {
-        "environments/environment.ts": "environments/environment.ts"
+        "environments\\environment.ts": "environments\\environment.ts"
       },
       "sourceMap": true,
-      "tsConfigPath": "true/tsconfig.app.json",
+      "tsConfigPath": "ClientApp\\tsconfig.app.json",
       "skipCodeGeneration": true,
       "compilerOptions": {}
     })

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.SpaServices.Webpack;
 
 namespace SportsStore
 {
@@ -27,6 +28,12 @@ namespace SportsStore
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseDeveloperExceptionPage();
+            app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions {
+                HotModuleReplacement = true
+            });
+            
+            /*
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -35,6 +42,7 @@ namespace SportsStore
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+            */
 
             app.UseStaticFiles();
 

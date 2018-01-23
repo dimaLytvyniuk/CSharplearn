@@ -6,7 +6,7 @@
   },
   "apps": [
     {
-      "root": "true",
+      "root": "ClientApp",
       "outDir": "dist",
       "assets": [
         "assets",
@@ -37,11 +37,11 @@
   },
   "lint": [
     {
-      "project": "true/tsconfig.app.json",
+      "project": "src/tsconfig.app.json",
       "exclude": "**/node_modules/**"
     },
     {
-      "project": "true/tsconfig.spec.json",
+      "project": "src/tsconfig.spec.json",
       "exclude": "**/node_modules/**"
     },
     {
