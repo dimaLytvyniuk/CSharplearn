@@ -10,9 +10,15 @@ namespace SportsStore.Controllers
 {
     public class HomeController : Controller
     {
+        private DataContext context;
+
+        public HomeController (DataContext ctx) {
+            context = ctx;
+        }
         public IActionResult Index()
         {
-            return View();
+            ViewBag.Message = "Sports Store App";
+            return View(context.Products.First());
         }
     }
 }
