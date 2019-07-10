@@ -39,7 +39,10 @@ namespace SignalRStudy.WebApi
             app.UseHttpsRedirection();
             app.UseCors("CorsPolicy");
             
-            app.UseSignalR(routes => { routes.MapHub<ChatHub>("/chatHub"); });
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<ChatHub>("/chatHub", options => options.ApplicationMaxBufferSize = 1000 * 1024);
+            });
             app.UseMvc();
         }
     }

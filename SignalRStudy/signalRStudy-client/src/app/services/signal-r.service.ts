@@ -36,4 +36,11 @@ export class SignalRService {
       .then(() => console.log("Message Sended"))
       .catch(err => console.log('Error while send message: ' + err))
   }
+
+  public sendBytes(bytes: number[]) {
+    this.hubConnection
+      .invoke('SendBytes', "MyUser", bytes)
+      .then(() => console.log("Message Sended"))
+      .catch(err => console.log('Error while send message: ' + err))
+  }
 }
