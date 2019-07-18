@@ -1,3 +1,6 @@
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using Serilog;
@@ -14,6 +17,7 @@ namespace SignalRStudy.WebApi
         public async Task SendBytes(string user, object[] bytes)
         {
             Log.Error("Receive Bytes: " + bytes.Length);
+            await Clients.All.SendAsync("ReceiveBytes", bytes);
         }
     }
 }

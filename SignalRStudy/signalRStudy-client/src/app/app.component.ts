@@ -13,19 +13,29 @@ export class AppComponent implements OnInit {
   title = 'signalRStudy-client';
   files: FileList;
 
+  sourceBuffer: SourceBuffer;
+  queue = [];
+  videoPlay: HTMLVideoElement;
+  mediaSource: MediaSource;
+
   constructor(public signalRService: SignalRService) { }
 
   ngOnInit() {
     this.signalRService.startConnection();
     //this.signalRService.sendMessage();   
     this.signalRService.receveiveMessage();
+    
+    this.recordVideo();
+    this.playVideo();
+  }
 
+  recordVideo() {
     const constraints = {
       video: true,
       audio: false
     };
     
-    const video = document.querySelector('video');
+    const video = document.getElementById('videoRecord') as HTMLVideoElement;
     
     navigator.mediaDevices.getUserMedia(constraints).
       then((stream) => {
@@ -39,26 +49,60 @@ export class AppComponent implements OnInit {
         } else {
           // ...
         }
-        console.log(options);
 
         video.srcObject = stream;
-        
         
         let recorder = new MediaRecorder(stream, options);
 
         recorder.ondataavailable = (e) => {
-          console.log(e.data);
           
           new Response(e.data).arrayBuffer()
             .then((arrayBuffer) => {
-              let buffer = new Int8Array(arrayBuffer as ArrayBuffer);
-              console.log(buffer);
-              this.signalRService.sendBytes(new Number[] = (buffer))
+              let buffer = new Uint8Array(arrayBuffer as ArrayBuffer);
+              let array = Array.from(buffer);
+              this.signalRService.sendBytes(array)
             });          
         };
 
-        recorder.start(100);
+        recorder.start(500);
         console.log(recorder.videoBitsPerSecond);
+      });
+  }
+
+  playVideo() {
+    this.videoPlay = document.getElementById('videoPlay') as HTMLVideoElement;
+
+    this.videoPlay.load();
+    this.mediaSource = new MediaSource();
+    this.videoPlay.src = window.URL.createObjectURL(this.mediaSource);
+    this.mediaSource.addEventListener('sourceopen', () => this.sourceOpen());
+    
+    console.log(this.videoPlay.readyState);
+  }
+
+  public sourceOpen() {
+    console.log("source opened")
+    URL.revokeObjectURL(this.videoPlay.src);
+    console.log(`media source ${this.mediaSource.readyState}`)
+      this.sourceBuffer = this.mediaSource.addSourceBuffer('video/webm; codecs="vorbis,vp8"');
+      this.sourceBuffer.mode = 'sequence';
+      this.signalRService.receiveBytes(this.sourceBuffer, this.queue, this.mediaSource, this.videoPlay);
+
+      this.sourceBuffer.addEventListener('update', () => {
+        console.log("Updated buffer");
+        if (this.queue.length > 0 && !this.sourceBuffer.updating) {
+          this.sourceBuffer.appendBuffer(this.queue.shift());
+        }
+      }, false);
+
+      this.sourceBuffer.addEventListener('error', function(ev) {
+        console.error(ev);
+      });
+
+      this.sourceBuffer.addEventListener('updateend', (ev) => {
+        console.error(ev);
+        console.error(this.sourceBuffer);
+        console.error(this.mediaSource.readyState);
       });
   }
 
@@ -86,5 +130,32 @@ export class AppComponent implements OnInit {
   saveChunks(e) {
     console.log(e);
     console.log(e.data.size);
+  }
+
+  onReceivingNewBytes(data) {
+    let data = new Uint8Array(bytes);
+    
+      console.log(`Video state is ${video.readyState}`);
+      if (this.count !== 0 && (sourceBuffer.updating || mediaSource.readyState != "open" || !this.readyVideo || queue.length > 0)) {
+        queue.push(data.buffer);
+      } else {
+        console.log("Addede to source buffer");
+        sourceBuffer.appendBuffer(data.buffer);
+      }
+
+      if (this.count === 0) {
+        this.count++;
+        let promise = video.play();
+        console.log(promise);
+        if (promise !== undefined) {
+          promise.then(_ => {
+            console.error("is played");
+            this.readyVideo = true;
+          }).catch(error => {
+            console.error("Error in promise");
+            console.error(error);
+          });
+        }
+      }
   }
 }
