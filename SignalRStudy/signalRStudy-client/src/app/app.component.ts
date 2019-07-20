@@ -17,6 +17,8 @@ export class AppComponent implements OnInit {
   queue = [];
   videoPlay: HTMLVideoElement;
   mediaSource: MediaSource;
+  isReadyToPlayVideo = false;
+  countOfReceivedChuncks = 0;
 
   constructor(public signalRService: SignalRService) { }
 
@@ -24,9 +26,9 @@ export class AppComponent implements OnInit {
     this.signalRService.startConnection();
     //this.signalRService.sendMessage();   
     this.signalRService.receveiveMessage();
-    
-    this.recordVideo();
+
     this.playVideo();
+    this.recordVideo();
   }
 
   recordVideo() {
@@ -34,34 +36,36 @@ export class AppComponent implements OnInit {
       video: true,
       audio: false
     };
-    
+
     const video = document.getElementById('videoRecord') as HTMLVideoElement;
-    
+
     navigator.mediaDevices.getUserMedia(constraints).
       then((stream) => {
         //var options = {mimeType: 'video/webm; codecs=vp9'};
 
         var options;
         if (MediaRecorder.isTypeSupported('video/webm;codecs=vp9')) {
-          options = {mimeType: 'video/webm; codecs=vp9'};
+          options = { mimeType: 'video/webm; codecs=vp9' };
         } else if (MediaRecorder.isTypeSupported('video/webm;codecs=vp8')) {
-          options = {mimeType: 'video/webm; codecs=vp8'};
+          options = { mimeType: 'video/webm; codecs=vp8' };
         } else {
           // ...
         }
 
         video.srcObject = stream;
-        
+
         let recorder = new MediaRecorder(stream, options);
 
         recorder.ondataavailable = (e) => {
-          
+
           new Response(e.data).arrayBuffer()
             .then((arrayBuffer) => {
               let buffer = new Uint8Array(arrayBuffer as ArrayBuffer);
               let array = Array.from(buffer);
-              this.signalRService.sendBytes(array)
-            });          
+              //console.log(arrayBuffer);
+              this.signalRService.sendBytes(array);
+              //this.onReceivingNewBytes(array);
+            });
         };
 
         recorder.start(500);
@@ -76,7 +80,7 @@ export class AppComponent implements OnInit {
     this.mediaSource = new MediaSource();
     this.videoPlay.src = window.URL.createObjectURL(this.mediaSource);
     this.mediaSource.addEventListener('sourceopen', () => this.sourceOpen());
-    
+
     console.log(this.videoPlay.readyState);
   }
 
@@ -84,26 +88,26 @@ export class AppComponent implements OnInit {
     console.log("source opened")
     URL.revokeObjectURL(this.videoPlay.src);
     console.log(`media source ${this.mediaSource.readyState}`)
-      this.sourceBuffer = this.mediaSource.addSourceBuffer('video/webm; codecs="vorbis,vp8"');
-      this.sourceBuffer.mode = 'sequence';
-      this.signalRService.receiveBytes(this.sourceBuffer, this.queue, this.mediaSource, this.videoPlay);
+    this.sourceBuffer = this.mediaSource.addSourceBuffer('video/webm; codecs=vp9');
+    this.sourceBuffer.mode = 'sequence';
+    this.signalRService.receiveBytes((bytes) => this.onReceivingNewBytes(bytes));
 
-      this.sourceBuffer.addEventListener('update', () => {
-        console.log("Updated buffer");
-        if (this.queue.length > 0 && !this.sourceBuffer.updating) {
-          this.sourceBuffer.appendBuffer(this.queue.shift());
-        }
-      }, false);
+    this.sourceBuffer.addEventListener('update', () => {
+      console.log("Updated buffer");
+      if (this.queue.length > 0 && !this.sourceBuffer.updating) {
+        this.sourceBuffer.appendBuffer(this.queue.shift());
+      }
+    }, false);
 
-      this.sourceBuffer.addEventListener('error', function(ev) {
-        console.error(ev);
-      });
+    this.sourceBuffer.addEventListener('error', function (ev) {
+      console.error(ev);
+    });
 
-      this.sourceBuffer.addEventListener('updateend', (ev) => {
-        console.error(ev);
-        console.error(this.sourceBuffer);
-        console.error(this.mediaSource.readyState);
-      });
+    this.sourceBuffer.addEventListener('updateend', (ev) => {
+      console.error(ev);
+      console.error(this.sourceBuffer);
+      console.error(this.mediaSource.readyState);
+    });
   }
 
   onSuccess(stream) {
@@ -132,30 +136,32 @@ export class AppComponent implements OnInit {
     console.log(e.data.size);
   }
 
-  onReceivingNewBytes(data) {
-    let data = new Uint8Array(bytes);
-    
-      console.log(`Video state is ${video.readyState}`);
-      if (this.count !== 0 && (sourceBuffer.updating || mediaSource.readyState != "open" || !this.readyVideo || queue.length > 0)) {
-        queue.push(data.buffer);
-      } else {
-        console.log("Addede to source buffer");
-        sourceBuffer.appendBuffer(data.buffer);
-      }
+  onReceivingNewBytes(bytes) {
+    //let data = bytes;
+    let data = new Uint8Array(bytes).buffer;
+    console.log(bytes);
 
-      if (this.count === 0) {
-        this.count++;
-        let promise = video.play();
-        console.log(promise);
-        if (promise !== undefined) {
-          promise.then(_ => {
-            console.error("is played");
-            this.readyVideo = true;
-          }).catch(error => {
-            console.error("Error in promise");
-            console.error(error);
-          });
-        }
+    console.log(`Video state is ${this.videoPlay.readyState}`);
+    if (this.countOfReceivedChuncks !== 0 && (this.sourceBuffer.updating || this.mediaSource.readyState != "open" || !this.isReadyToPlayVideo || this.queue.length > 0)) {
+      this.queue.push(data);
+    } else {
+      console.log("Addede to source buffer");
+      this.sourceBuffer.appendBuffer(data);
+    }
+
+    if (this.countOfReceivedChuncks === 0) {
+      this.countOfReceivedChuncks++;
+      let promise = this.videoPlay.play();
+      console.log(promise);
+      if (promise !== undefined) {
+        promise.then(_ => {
+          console.error("is played");
+          this.isReadyToPlayVideo = true;
+        }).catch(error => {
+          console.error("Error in promise");
+          console.error(error);
+        });
       }
+    }
   }
 }

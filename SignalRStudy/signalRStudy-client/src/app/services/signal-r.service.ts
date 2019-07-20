@@ -21,10 +21,6 @@ export class SignalRService {
       .then(() => {
         console.log('Connection started');
         this.sendMessage();
-
-        let x = new Int8Array();
-        let y = Array.from(x);
-        this.sendBytes(y);
       })
       .catch(err => console.log('Error while starting connection: ' + err))
   }
@@ -50,32 +46,7 @@ export class SignalRService {
       .catch(err => console.log('Error while send message: ' + err))
   }
 
-  public receiveBytes(sourceBuffer: SourceBuffer, queue, mediaSource, video) {
-    this.hubConnection.on('ReceiveBytes', (bytes) => {
-      let data = new Uint8Array(bytes);
-    
-      console.log(`Video state is ${video.readyState}`);
-      if (this.count !== 0 && (sourceBuffer.updating || mediaSource.readyState != "open" || !this.readyVideo || queue.length > 0)) {
-        queue.push(data.buffer);
-      } else {
-        console.log("Addede to source buffer");
-        sourceBuffer.appendBuffer(data.buffer);
-      }
-
-      if (this.count === 0) {
-        this.count++;
-        let promise = video.play();
-        console.log(promise);
-        if (promise !== undefined) {
-          promise.then(_ => {
-            console.error("is played");
-            this.readyVideo = true;
-          }).catch(error => {
-            console.error("Error in promise");
-            console.error(error);
-          });
-        }
-      }
-    })
+  public receiveBytes(callback) {
+    this.hubConnection.on('ReceiveBytes', (bytes) => callback(bytes))
   }
 }
