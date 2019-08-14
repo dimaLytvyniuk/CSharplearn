@@ -23,8 +23,10 @@ namespace SignalRStudy.WebApi
                     .AllowCredentials()
                     .WithExposedHeaders("Authorization")));
             
-            services.AddMvc();
+            services.AddMvc(config => config.Filters.Add(typeof(EndpointAccessFilter)));
             services.AddSignalR();
+
+            services.AddSingleton<IEnglishLearningHub, ChatHub>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -39,10 +41,13 @@ namespace SignalRStudy.WebApi
             app.UseHttpsRedirection();
             app.UseCors("CorsPolicy");
             
+            app.UseMiddleware<MyMiddleware>();
+            
             app.UseSignalR(routes =>
             {
                 routes.MapHub<ChatHub>("/chatHub", options => options.ApplicationMaxBufferSize = 1000 * 1024);
             });
+
             app.UseMvc();
         }
     }

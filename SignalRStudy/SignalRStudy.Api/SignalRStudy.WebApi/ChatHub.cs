@@ -1,13 +1,12 @@
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
+using System;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using Serilog;
 
 namespace SignalRStudy.WebApi
 {
-    public class ChatHub: Hub
+    public class ChatHub: Hub, IEnglishLearningHub
     {
         public async Task SendMessage(string user, string message)
         {
