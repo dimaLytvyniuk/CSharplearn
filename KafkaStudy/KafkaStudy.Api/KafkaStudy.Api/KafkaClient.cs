@@ -11,20 +11,23 @@ namespace KafkaStudy.Api
 {
     public class KafkaClient: IKafkaClient
     {
-        private IProducer<Null, string> _producer;
+        private IProducer<Null, User> _producer;
 
         public KafkaClient(IConfiguration globalconf)
         {
             var config = new ProducerConfig { BootstrapServers = "localhost:9092" };
 
-            _producer = new ProducerBuilder<Null, string>(config).Build();
+            _producer = new ProducerBuilder<Null, User>(config)
+                .SetValueSerializer(new ProtobufSerializer<User>())
+                .Build();
 
             //Task.Run(() => CreateConsumer());
         }
 
-        public Task<DeliveryResult<Null, string>> Produce(string key, string val)
+        public Task<DeliveryResult<Null, User>> Produce(string topic, string key, string val)
         {
-            return _producer.ProduceAsync("my-topic", new Message<Null, string> { Value="test" });
+            var user = new User() {Id = Guid.NewGuid(), MessageKey = val};
+            return _producer.ProduceAsync(topic, new Message<Null, User> {  Value = user});
         }
 
         public void CreateConsumer()

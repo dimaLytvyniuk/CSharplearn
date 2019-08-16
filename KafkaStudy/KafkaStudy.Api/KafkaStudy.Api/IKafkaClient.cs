@@ -6,6 +6,6 @@ namespace KafkaStudy.Api
 {
     public interface IKafkaClient: IDisposable
     {
-        Task<DeliveryResult<Null, string>> Produce(string key, string val);
+        Task<DeliveryResult<Null, User>> Produce(string topic, string key, string val);
     }
 }

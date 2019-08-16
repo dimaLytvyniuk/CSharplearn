@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Confluent.Kafka;
@@ -27,9 +28,12 @@ namespace KafkaStudy.Api
                 AutoOffsetReset = AutoOffsetReset.Earliest
             };
             
-            using (var c = new ConsumerBuilder<Ignore, string>(conf).Build())
+            using (var c = new ConsumerBuilder<Ignore, User>(conf)
+                .SetValueDeserializer(new ProtobufSerializer<User>())
+                .Build())
             {
-                c.Subscribe("my-topic");
+                var list = new List<string> {"my-topic", "my-second-topic"};
+                c.Subscribe(list);
                 CancellationTokenSource cts = new CancellationTokenSource();
                 Console.CancelKeyPress += (_, e) =>
                 {
@@ -44,7 +48,7 @@ namespace KafkaStudy.Api
                         try
                         {
                             var cr = c.Consume(cts.Token);
-                            Log.Error($"Consumed message '{cr.Value}' at: '{cr.TopicPartitionOffset}'.");
+                            Log.Error($"Consumed message '{cr.Topic}' '{cr.Value.Id}' at: '{cr.TopicPartitionOffset}'.");
                         }
                         catch (ConsumeException e)
                         {
