@@ -16,8 +16,10 @@ namespace KafkaStudy.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IKafkaClient, KafkaClient>();
+            services.AddSingleton(typeof(IKafkaConsumerStream<>), typeof(KafkaConsumerStream<>));
             services.AddMvc();
-
+            //services.AddSingleton<IKafkaMessageHandler<User>, UserHandler>();
+            
             services.AddHostedService<BackgroundConsumer>();
         }
 

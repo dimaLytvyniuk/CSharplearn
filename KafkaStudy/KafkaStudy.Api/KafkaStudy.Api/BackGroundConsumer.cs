@@ -10,8 +10,11 @@ namespace KafkaStudy.Api
 {
     public class BackgroundConsumer : BackgroundService
     {
-        public BackgroundConsumer()
+        private readonly IKafkaConsumerStream<User> _kafkaConsumerStream;
+        
+        public BackgroundConsumer(IKafkaConsumerStream<User> kafkaConsumerStream)
         {
+            _kafkaConsumerStream = kafkaConsumerStream;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -48,7 +51,7 @@ namespace KafkaStudy.Api
                         try
                         {
                             var cr = c.Consume(cts.Token);
-                            Log.Error($"Consumed message '{cr.Topic}' '{cr.Value.Id}' at: '{cr.TopicPartitionOffset}'.");
+                            _kafkaConsumerStream.Publish(cr.Value);
                         }
                         catch (ConsumeException e)
                         {
