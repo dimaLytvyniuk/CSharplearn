@@ -18,7 +18,8 @@ namespace KafkaStudy.Api
             services.AddSingleton<IKafkaClient, KafkaClient>();
             services.AddSingleton(typeof(IKafkaConsumerStream<>), typeof(KafkaConsumerStream<>));
             services.AddMvc();
-            //services.AddSingleton<IKafkaMessageHandler<User>, UserHandler>();
+            services.AddTransient<IKafkaMessageHandler<User>, UserHandler>();
+            services.AddTransient<UserHandler>();
             
             services.AddHostedService<BackgroundConsumer>();
         }
