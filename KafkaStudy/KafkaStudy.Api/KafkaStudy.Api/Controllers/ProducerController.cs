@@ -15,7 +15,7 @@ namespace KafkaStudy.Api.Controllers
         [HttpGet("/getInfo")]
         public async Task<ActionResult<string>> GetInfo()
         {
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 100; i++)
             {
                 var result = await _kafkaClient.Produce("my-topic", "key", "val");
                 var result1 = await _kafkaClient.Produce("my-second-topic", "key", "val2");

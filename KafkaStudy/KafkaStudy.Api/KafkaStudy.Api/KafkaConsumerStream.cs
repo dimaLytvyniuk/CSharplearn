@@ -12,6 +12,8 @@ namespace KafkaStudy.Api
     public class KafkaConsumerStream<T>: IKafkaConsumerStream<T>, IDisposable
     {
         private const int RETRY_COUNT = 3;
+        private const int THREAD_COUNT = 4;
+        private const int RETRY_TIMEOUT = 500;
         
         private readonly Subject<T> _subject;
         private readonly IDictionary<string, IDisposable> _subscribers;
@@ -47,11 +49,14 @@ namespace KafkaStudy.Api
             {
                 _subscribers.Add(
                     handler.GetType().FullName, 
-                    _subject.Subscribe(DefaultAction(handler)));   
+                    _subject
+                        .Select(message => Observable.FromAsync(async () => await DefaultAction(handler).Invoke(message)))
+                        .Merge(THREAD_COUNT)
+                        .Subscribe(unit => {}));
             }
         }
         
-        private Action<T> DefaultAction<KHandler>(KHandler handler) where KHandler: IKafkaMessageHandler<T>
+        private Func<T, Task> DefaultAction<KHandler>(KHandler handler) where KHandler: IKafkaMessageHandler<T>
         {
             return async (message) =>
             {
@@ -65,6 +70,7 @@ namespace KafkaStudy.Api
                     catch (Exception ex)
                     {
                         Log.Error($"Exception {ex}");
+                        await Task.Delay(RETRY_TIMEOUT);
                     }   
                 }
             };
