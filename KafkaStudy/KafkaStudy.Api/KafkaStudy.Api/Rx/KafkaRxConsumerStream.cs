@@ -1,15 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
-namespace KafkaStudy.Api
+namespace KafkaStudy.Api.Rx
 {
-    public class KafkaConsumerStream<T>: IKafkaConsumerStream<T>, IDisposable
+    public class KafkaRxConsumerStream<T>: IKafkaRxConsumerStream<T>, IDisposable
     {
         private const int RETRY_COUNT = 3;
         private const int THREAD_COUNT = 4;
@@ -19,7 +18,7 @@ namespace KafkaStudy.Api
         private readonly IDictionary<string, IDisposable> _subscribers;
         private readonly IServiceProvider _serviceProvider;
         
-        public KafkaConsumerStream(IEnumerable<IKafkaMessageHandler<T>> kafkaMessageHandlers, IServiceProvider serviceProvider)
+        public KafkaRxConsumerStream(IEnumerable<IKafkaMessageHandler<T>> kafkaMessageHandlers, IServiceProvider serviceProvider)
         {
             _subject = new Subject<T>();
             _subscribers = new Dictionary<string, IDisposable>();

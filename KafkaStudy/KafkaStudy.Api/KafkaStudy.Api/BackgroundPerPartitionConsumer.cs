@@ -1,34 +1,23 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Confluent.Kafka;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Serilog;
 
 namespace KafkaStudy.Api
 {
-    public class KafkaClient: IKafkaClient
+    public class BackgroundPerPartitionConsumer<T>: BackgroundService
     {
-        private IProducer<Null, User> _producer;
-
-        public KafkaClient(IConfiguration globalconf)
+        private readonly IKafkaMessageConsumer<T> _kafkaMessageConsumer;
+        
+        public BackgroundPerPartitionConsumer(IKafkaMessageConsumer<T> kafkaMessageConsumer)
         {
-            var config = new ProducerConfig { BootstrapServers = "localhost:9092" };
-
-            _producer = new ProducerBuilder<Null, User>(config)
-                .SetValueSerializer(new ProtobufSerializer<User>())
-                .Build();
-
-            //Task.Run(() => CreateConsumer());
+            _kafkaMessageConsumer = kafkaMessageConsumer;
         }
 
-        public Task<DeliveryResult<Null, User>> Produce(string topic, string key, string val)
-        {
-            var user = new User() {Id = Guid.NewGuid(), MessageKey = val};
-            return _producer.ProduceAsync(topic, new Message<Null, User> {  Value = user});
-        }
-
-        public void CreateConsumer()
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             var conf = new ConsumerConfig
             { 
@@ -42,24 +31,28 @@ namespace KafkaStudy.Api
                 AutoOffsetReset = AutoOffsetReset.Earliest
             };
             
-            using (var c = new ConsumerBuilder<Ignore, string>(conf).Build())
+            using (var c = new ConsumerBuilder<Ignore, T>(conf)
+                .SetValueDeserializer(new ProtobufSerializer<T>())
+                .Build())
             {
-                c.Subscribe("my-topic");
-
+                var list = new List<string> {"my-topic", "my-second-topic"};
+                c.Subscribe(list);
                 CancellationTokenSource cts = new CancellationTokenSource();
-                Console.CancelKeyPress += (_, e) => {
+                Console.CancelKeyPress += (_, e) =>
+                {
                     e.Cancel = true; // prevent the process from terminating.
                     cts.Cancel();
                 };
 
                 try
                 {
-                    while (true)
+                    while (!stoppingToken.IsCancellationRequested)
                     {
                         try
                         {
                             var cr = c.Consume(cts.Token);
-                            Log.Error($"Consumed message '{cr.Value}' at: '{cr.TopicPartitionOffset}'.");
+                            Log.Error($"Partition {cr.Partition.Value}");
+                            await _kafkaMessageConsumer.ConsumeAsync(cr.Value);
                         }
                         catch (ConsumeException e)
                         {
@@ -73,11 +66,6 @@ namespace KafkaStudy.Api
                     c.Close();
                 }
             }
-        }
-        
-        public void Dispose()
-        {
-            _producer.Dispose();
         }
     }
 }

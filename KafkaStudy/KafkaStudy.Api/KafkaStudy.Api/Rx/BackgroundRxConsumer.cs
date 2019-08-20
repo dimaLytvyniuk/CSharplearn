@@ -8,11 +8,11 @@ using Serilog;
 
 namespace KafkaStudy.Api
 {
-    public class BackgroundConsumer : BackgroundService
+    public class BackgroundRxConsumer : BackgroundService
     {
-        private readonly IKafkaConsumerStream<User> _kafkaConsumerStream;
+        private readonly IKafkaRxConsumerStream<User> _kafkaConsumerStream;
         
-        public BackgroundConsumer(IKafkaConsumerStream<User> kafkaConsumerStream)
+        public BackgroundRxConsumer(IKafkaRxConsumerStream<User> kafkaConsumerStream)
         {
             _kafkaConsumerStream = kafkaConsumerStream;
         }
@@ -52,6 +52,7 @@ namespace KafkaStudy.Api
                         {
                             var cr = c.Consume(cts.Token);
                             _kafkaConsumerStream.Publish(cr.Value);
+                            c.Commit(cr);
                         }
                         catch (ConsumeException e)
                         {

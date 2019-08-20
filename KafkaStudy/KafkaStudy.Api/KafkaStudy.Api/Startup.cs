@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using KafkaStudy.Api.Rx;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace KafkaStudy.Api
 {
@@ -16,12 +19,15 @@ namespace KafkaStudy.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IKafkaClient, KafkaClient>();
-            services.AddSingleton(typeof(IKafkaConsumerStream<>), typeof(KafkaConsumerStream<>));
+            services.AddSingleton(typeof(IKafkaRxConsumerStream<>), typeof(KafkaRxConsumerStream<>));
             services.AddMvc();
             services.AddTransient<IKafkaMessageHandler<User>, UserHandler>();
             services.AddTransient<UserHandler>();
-            
-            services.AddHostedService<BackgroundConsumer>();
+         
+            services.AddTransient(typeof(IKafkaMessageConsumer<>), typeof(KafkaMessageConsumer<>));
+
+            services.AddTransient<BackgroundPerPartitionConsumer<User>>();
+            services.AddTransient<IHostedService>(sp => sp.GetRequiredService<BackgroundPerPartitionConsumer<User>>());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
