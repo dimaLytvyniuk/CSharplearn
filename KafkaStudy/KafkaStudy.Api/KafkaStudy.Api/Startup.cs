@@ -26,8 +26,18 @@ namespace KafkaStudy.Api
          
             services.AddTransient(typeof(IKafkaMessageConsumer<>), typeof(KafkaMessageConsumer<>));
 
+            //services.AddTransient<BackgroundPerPartitionConsumer<User>>();
+            //services.AddTransient<IHostedService>(sp => sp.GetRequiredService<BackgroundPerPartitionConsumer<User>>());
             services.AddTransient<BackgroundPerPartitionConsumer<User>>();
-            services.AddTransient<IHostedService>(sp => sp.GetRequiredService<BackgroundPerPartitionConsumer<User>>());
+            services.AddHostedService<BackgroundPerPartitionConsumer1<User>>();
+            services.AddSingleton<IHostedService>(sp => sp.GetRequiredService<BackgroundPerPartitionConsumer<User>>());
+            services.AddSingleton<IHostedService>(sp => sp.GetRequiredService<BackgroundPerPartitionConsumer<User>>());
+            services.AddSingleton<IHostedService>(sp => sp.GetRequiredService<BackgroundPerPartitionConsumer<User>>());
+            services.AddSingleton<IHostedService>(sp => sp.GetRequiredService<BackgroundPerPartitionConsumer<User>>());
+            
+            //services.AddHostedService<BackgroundPerPartitionConsumer<User>>();
+
+            services.AddHttpClient();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

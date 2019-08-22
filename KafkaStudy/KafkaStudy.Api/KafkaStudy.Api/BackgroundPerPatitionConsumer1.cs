@@ -8,23 +8,19 @@ using Serilog;
 
 namespace KafkaStudy.Api
 {
-    public class BackgroundPerPartitionConsumer<T>: BackgroundService
+    public class BackgroundPerPartitionConsumer1<T> : BackgroundService
     {
         private readonly IKafkaMessageConsumer<T> _kafkaMessageConsumer;
-        private static int ConsumerCount = 0;
-        private int ConumerId;
-        
-        public BackgroundPerPartitionConsumer(IKafkaMessageConsumer<T> kafkaMessageConsumer)
+
+        public BackgroundPerPartitionConsumer1(IKafkaMessageConsumer<T> kafkaMessageConsumer)
         {
             _kafkaMessageConsumer = kafkaMessageConsumer;
-            ConsumerCount++;
-            ConumerId = ConsumerCount;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             var conf = new ConsumerConfig
-            { 
+            {
                 GroupId = "test-consumer-group",
                 BootstrapServers = "localhost:9092",
                 // Note: The AutoOffsetReset property determines the start offset in the event
@@ -34,12 +30,12 @@ namespace KafkaStudy.Api
                 // earliest message in the topic 'my-topic' the first time you run the program.
                 AutoOffsetReset = AutoOffsetReset.Earliest
             };
-            
+
             using (var c = new ConsumerBuilder<Ignore, T>(conf)
                 .SetValueDeserializer(new ProtobufSerializer<T>())
                 .Build())
             {
-                var list = new List<string> {"my-topic"};
+                var list = new List<string> {"my-second-topic"};
                 c.Subscribe(list);
                 CancellationTokenSource cts = new CancellationTokenSource();
                 Console.CancelKeyPress += (_, e) =>
@@ -57,10 +53,14 @@ namespace KafkaStudy.Api
                             var cr = c.Consume(cts.Token);
                             if (cr != null)
                             {
-                                Log.Error($"First topic {ConumerId} {cr.Partition.Value}");
+                                Log.Error($"SecondTopic {cr.Partition.Value}");
                                 await _kafkaMessageConsumer.ConsumeAsync(cr.Value);
-                                Log.Error($"End First topic {ConumerId} {cr.Partition.Value}");
+                                Log.Error($"End SecondTopic {cr.Partition.Value}");
                             }
+//                            else
+//                            {
+//                                await Task.Delay(TimeSpan.FromMilliseconds(100));
+//                            }
                         }
                         catch (ConsumeException e)
                         {
