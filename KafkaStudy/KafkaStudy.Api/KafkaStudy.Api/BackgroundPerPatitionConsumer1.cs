@@ -8,13 +8,13 @@ using Serilog;
 
 namespace KafkaStudy.Api
 {
-    public class BackgroundPerPartitionConsumer1<T> : BackgroundService
+    public class BackgroundPerPartitionConsumer1 : BackgroundService
     {
-        private readonly IKafkaMessageConsumer<T> _kafkaMessageConsumer;
+        private readonly IKafkaMessageConsumerFactory _consumerFactory;
 
-        public BackgroundPerPartitionConsumer1(IKafkaMessageConsumer<T> kafkaMessageConsumer)
+        public BackgroundPerPartitionConsumer1(IKafkaMessageConsumerFactory consumerFactory)
         {
-            _kafkaMessageConsumer = kafkaMessageConsumer;
+            _consumerFactory = consumerFactory;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -31,9 +31,7 @@ namespace KafkaStudy.Api
                 AutoOffsetReset = AutoOffsetReset.Earliest
             };
 
-            using (var c = new ConsumerBuilder<Ignore, T>(conf)
-                .SetValueDeserializer(new ProtobufSerializer<T>())
-                .Build())
+            using (var c = new ConsumerBuilder<Ignore, byte[]>(conf).Build())
             {
                 var list = new List<string> {"my-second-topic"};
                 c.Subscribe(list);
@@ -51,16 +49,11 @@ namespace KafkaStudy.Api
                         try
                         {
                             var cr = c.Consume(cts.Token);
-                            if (cr != null)
-                            {
-                                Log.Error($"SecondTopic {cr.Partition.Value}");
-                                await _kafkaMessageConsumer.ConsumeAsync(cr.Value);
-                                Log.Error($"End SecondTopic {cr.Partition.Value}");
-                            }
-//                            else
-//                            {
-//                                await Task.Delay(TimeSpan.FromMilliseconds(100));
-//                            }
+                            
+                            Log.Error($"SecondTopic {cr.Partition.Value}");
+                            var consumer = _consumerFactory.GetMessageConsumer(cr.Topic);
+                            await consumer.ConsumeAsync(cr.Value);
+                            Log.Error($"End SecondTopic {cr.Partition.Value}");
                         }
                         catch (ConsumeException e)
                         {
@@ -68,10 +61,11 @@ namespace KafkaStudy.Api
                         }
                     }
                 }
-                catch (OperationCanceledException)
+                catch (Exception ex)
                 {
                     // Ensure the consumer leaves the group cleanly and final offsets are committed.
                     c.Close();
+                    Log.Error($"Exception {ex}");
                 }
             }
         }

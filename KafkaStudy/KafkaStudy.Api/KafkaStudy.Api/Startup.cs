@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using KafkaStudy.Api.Rx;
+﻿using KafkaStudy.Api.Rx;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
@@ -24,16 +19,20 @@ namespace KafkaStudy.Api
             services.AddTransient<IKafkaMessageHandler<User>, UserHandler>();
             services.AddTransient<UserHandler>();
          
-            services.AddTransient(typeof(IKafkaMessageConsumer<>), typeof(KafkaMessageConsumer<>));
+            services.AddTransient<IKafkaMessageConsumer, KafkaMessageConsumer<User>>();
+            services.AddTransient<KafkaMessageConsumer<User>>();
+            services.AddTransient<IKafkaMessageConsumerFactory, KafkaMessageConsumerFactory>();
 
+            services.AddTransient(typeof(IMessageSerializer<>), typeof(ProtobufSerializer<>));
+            
             //services.AddTransient<BackgroundPerPartitionConsumer<User>>();
             //services.AddTransient<IHostedService>(sp => sp.GetRequiredService<BackgroundPerPartitionConsumer<User>>());
-            services.AddTransient<BackgroundPerPartitionConsumer<User>>();
-            services.AddHostedService<BackgroundPerPartitionConsumer1<User>>();
-            services.AddSingleton<IHostedService>(sp => sp.GetRequiredService<BackgroundPerPartitionConsumer<User>>());
-            services.AddSingleton<IHostedService>(sp => sp.GetRequiredService<BackgroundPerPartitionConsumer<User>>());
-            services.AddSingleton<IHostedService>(sp => sp.GetRequiredService<BackgroundPerPartitionConsumer<User>>());
-            services.AddSingleton<IHostedService>(sp => sp.GetRequiredService<BackgroundPerPartitionConsumer<User>>());
+            services.AddTransient<BackgroundPerPartitionConsumer>();
+            services.AddHostedService<BackgroundPerPartitionConsumer1>();
+            services.AddSingleton<IHostedService>(sp => sp.GetRequiredService<BackgroundPerPartitionConsumer>());
+            services.AddSingleton<IHostedService>(sp => sp.GetRequiredService<BackgroundPerPartitionConsumer>());
+            services.AddSingleton<IHostedService>(sp => sp.GetRequiredService<BackgroundPerPartitionConsumer>());
+            services.AddSingleton<IHostedService>(sp => sp.GetRequiredService<BackgroundPerPartitionConsumer>());
             
             //services.AddHostedService<BackgroundPerPartitionConsumer<User>>();
 

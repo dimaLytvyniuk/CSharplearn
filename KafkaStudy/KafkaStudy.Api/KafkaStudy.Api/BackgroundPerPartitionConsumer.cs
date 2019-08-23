@@ -8,15 +8,15 @@ using Serilog;
 
 namespace KafkaStudy.Api
 {
-    public class BackgroundPerPartitionConsumer<T>: BackgroundService
+    public class BackgroundPerPartitionConsumer: BackgroundService
     {
-        private readonly IKafkaMessageConsumer<T> _kafkaMessageConsumer;
+        private readonly IKafkaMessageConsumerFactory _consumerFactory;
         private static int ConsumerCount = 0;
         private int ConumerId;
-        
-        public BackgroundPerPartitionConsumer(IKafkaMessageConsumer<T> kafkaMessageConsumer)
+
+        public BackgroundPerPartitionConsumer(IKafkaMessageConsumerFactory consumerFactory)
         {
-            _kafkaMessageConsumer = kafkaMessageConsumer;
+            _consumerFactory = consumerFactory;
             ConsumerCount++;
             ConumerId = ConsumerCount;
         }
@@ -35,8 +35,8 @@ namespace KafkaStudy.Api
                 AutoOffsetReset = AutoOffsetReset.Earliest
             };
             
-            using (var c = new ConsumerBuilder<Ignore, T>(conf)
-                .SetValueDeserializer(new ProtobufSerializer<T>())
+            using (var c = new ConsumerBuilder<Ignore, byte[]>(conf)
+                //.SetValueDeserializer(new ProtobufSerializer<T>())
                 .Build())
             {
                 var list = new List<string> {"my-topic"};
@@ -55,12 +55,11 @@ namespace KafkaStudy.Api
                         try
                         {
                             var cr = c.Consume(cts.Token);
-                            if (cr != null)
-                            {
-                                Log.Error($"First topic {ConumerId} {cr.Partition.Value}");
-                                await _kafkaMessageConsumer.ConsumeAsync(cr.Value);
-                                Log.Error($"End First topic {ConumerId} {cr.Partition.Value}");
-                            }
+                            
+                            Log.Error($"First topic {ConumerId} {cr.Topic}");
+                            var consumer = _consumerFactory.GetMessageConsumer(cr.Topic);
+                            await consumer.ConsumeAsync(cr.Value);
+                            Log.Error($"End First topic {ConumerId} {cr.Value.Length}");
                         }
                         catch (ConsumeException e)
                         {
