@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Algorithms
 {
@@ -59,6 +60,32 @@ namespace Algorithms
             }
 
             return len;
+        }
+        
+        public static List<List<int>> pascalTriangle(int A) {
+            var result = new List<List<int>>();
+
+            for (var i = 0; i < A; i++)
+            {
+                var count = i + 1;
+                var median = count / 2;
+                median += (count % 2) == 1 ? 1 : 0;
+                
+                result.Add(new List<int>(Enumerable.Range(0, count)));
+                result[i][0] = 1;
+
+                for (var j = 1; j < median; j++)
+                {
+                    var newValue = result[i - 1][j] + result[i - 1][j - 1];
+                    result[i][j] = newValue;
+                    result[i][count - j - 1] = newValue;
+                }
+                
+                if (i > 0)
+                    result[i][i] = 1;
+            }
+
+            return result;
         }
     }
 }
