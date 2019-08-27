@@ -1,7 +1,14 @@
+using System;
+using System.Collections.Generic;
+
 namespace KafkaStudy.Api
 {
-    public interface IKafkaMessageConsumerFactory
+    internal interface IKafkaMessageConsumerFactory
     {
+        IReadOnlyDictionary<string, Type> TopicConsumerTypes { get; }
+
         IKafkaMessageConsumer GetMessageConsumer(string topic);
+
+        void AddTopicConsumerTypes(IReadOnlyDictionary<string, Type> topicConsumerTypes);
     }
 }

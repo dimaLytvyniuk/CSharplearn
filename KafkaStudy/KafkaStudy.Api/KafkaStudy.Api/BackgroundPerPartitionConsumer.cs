@@ -8,15 +8,18 @@ using Serilog;
 
 namespace KafkaStudy.Api
 {
-    public class BackgroundPerPartitionConsumer: BackgroundService
+    internal class BackgroundPerPartitionConsumer: BackgroundService
     {
         private readonly IKafkaMessageConsumerFactory _consumerFactory;
+        private readonly IReadOnlyList<string> _subscribedTopics;
+        
         private static int ConsumerCount = 0;
         private int ConumerId;
-
-        public BackgroundPerPartitionConsumer(IKafkaMessageConsumerFactory consumerFactory)
+        
+        public BackgroundPerPartitionConsumer(IKafkaMessageConsumerFactory consumerFactory, IReadOnlyList<string> subscribedTopics)
         {
             _consumerFactory = consumerFactory;
+            _subscribedTopics = subscribedTopics;
             ConsumerCount++;
             ConumerId = ConsumerCount;
         }
@@ -39,8 +42,7 @@ namespace KafkaStudy.Api
                 //.SetValueDeserializer(new ProtobufSerializer<T>())
                 .Build())
             {
-                var list = new List<string> {"my-topic"};
-                c.Subscribe(list);
+                c.Subscribe(_subscribedTopics);
                 CancellationTokenSource cts = new CancellationTokenSource();
                 Console.CancelKeyPress += (_, e) =>
                 {

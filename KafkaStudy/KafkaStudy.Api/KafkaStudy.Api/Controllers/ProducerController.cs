@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
@@ -5,11 +6,11 @@ namespace KafkaStudy.Api.Controllers
 {
     public class ProducerController: Controller
     {
-        private readonly IKafkaClient _kafkaClient;
+        private readonly IKafkaProducer<User> _kafkaProducer;
         
-        public ProducerController(IKafkaClient kafkaClient)
+        public ProducerController(IKafkaProducer<User> kafkaProducer)
         {
-            _kafkaClient = kafkaClient;
+            _kafkaProducer = kafkaProducer;
         }
         
         [HttpGet("/getInfo")]
@@ -17,8 +18,9 @@ namespace KafkaStudy.Api.Controllers
         {
             for (int i = 0; i < 10; i++)
             {
-                var result = await _kafkaClient.Produce("my-topic", "key", "val");
-                var result1 = await _kafkaClient.Produce("my-second-topic", "key", "val2");
+                var message = new User(){ Id = Guid.NewGuid(), MessageKey = "val"};
+                var result = await _kafkaProducer.Produce("my-topic", message);
+                var result1 = await _kafkaProducer.Produce("my-second-topic", message);
             }
 
             return Ok();

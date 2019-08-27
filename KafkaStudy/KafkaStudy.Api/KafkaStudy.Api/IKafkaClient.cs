@@ -4,8 +4,9 @@ using Confluent.Kafka;
 
 namespace KafkaStudy.Api
 {
-    public interface IKafkaClient: IDisposable
+    public interface IKafkaProducer<T>: IDisposable
     {
-        Task<DeliveryResult<Null, User>> Produce(string topic, string key, string val);
+        Task<DeliveryResult<Null, T>> Produce(string topicName, T message);
+        Task<DeliveryResult<Null, T>> Produce(T message);
     }
 }

@@ -1,39 +1,56 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 
 namespace KafkaStudy.Api
 {
-    public class KafkaMessageConsumerFactory: IKafkaMessageConsumerFactory
+    internal class KafkaMessageConsumerFactory: IKafkaMessageConsumerFactory
     {
         private readonly IServiceProvider _serviceProvider;
 
-        private readonly Dictionary<string, Type> _topicTypes = new Dictionary<string, Type>()
+        private readonly Lazy<Dictionary<string, IKafkaMessageConsumer>> _consumerCache;
+
+        private readonly Dictionary<string, Type> _topicConsumerTypes = new Dictionary<string, Type>()
         {
             {"my-topic", typeof(KafkaMessageConsumer<User>)},
             {"my-second-topic", typeof(KafkaMessageConsumer<User>)}
         };
 
-        private readonly Dictionary<string, IKafkaMessageConsumer> _consumerCache; 
+        public IReadOnlyDictionary<string, Type> TopicConsumerTypes  => _topicConsumerTypes;
         
-        public KafkaMessageConsumerFactory(IServiceProvider serviceProvider)
+        public KafkaMessageConsumerFactory(
+            IServiceProvider serviceProvider, 
+            Dictionary<string, Type> topicConsumerTypes)
         {
             _serviceProvider = serviceProvider;
-            _consumerCache = new Dictionary<string, IKafkaMessageConsumer>();
-            FillConsumerCache();
+            _topicConsumerTypes = topicConsumerTypes;
+            _consumerCache = new Lazy<Dictionary<string, IKafkaMessageConsumer>>(GetConsumersCache);
         }
 
         public IKafkaMessageConsumer GetMessageConsumer(string topic)
         {
-            return _consumerCache[topic];
+            return _consumerCache.Value[topic];
         }
 
-        private void FillConsumerCache()
+        public void AddTopicConsumerTypes(IReadOnlyDictionary<string, Type> topicConsumerTypes)
         {
-            foreach (var topic in _topicTypes.Keys)
+            foreach (var topicConsumerType in topicConsumerTypes)
             {
-                _consumerCache[topic] = (IKafkaMessageConsumer) _serviceProvider.GetRequiredService(_topicTypes[topic]);
+                _topicConsumerTypes.TryAdd(topicConsumerType.Key, topicConsumerType.Value);
             }
+        }
+
+        private Dictionary<string, IKafkaMessageConsumer> GetConsumersCache()
+        {
+            Log.Error("In initializer");
+            var consumerCache = new Dictionary<string, IKafkaMessageConsumer>();
+            foreach (var topic in TopicConsumerTypes.Keys)
+            {
+                consumerCache[topic] = (IKafkaMessageConsumer) _serviceProvider.GetRequiredService(TopicConsumerTypes[topic]);
+            }
+
+            return consumerCache;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using KafkaStudy.Api.Rx;
+﻿using KafkaStudy.Api.Configuration;
+using KafkaStudy.Api.Rx;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,7 +14,23 @@ namespace KafkaStudy.Api
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IKafkaClient, KafkaClient>();
+            services.AddKafkaProducers(options =>
+            { 
+                options.AddProducer<User>();
+            });
+
+            services
+                .AddKafkaConsumer(options =>
+                {
+                    options.PartitionCount = 4;
+                    options.AddTopic<User>("my-topic");
+                })
+                .AddKafkaConsumer(options =>
+                {
+                    options.PartitionCount = 1;
+                    options.AddTopic<User>("my-second-topic");
+                });
+            
             services.AddSingleton(typeof(IKafkaRxConsumerStream<>), typeof(KafkaRxConsumerStream<>));
             services.AddMvc();
             services.AddTransient<IKafkaMessageHandler<User>, UserHandler>();
@@ -28,7 +45,6 @@ namespace KafkaStudy.Api
             //services.AddTransient<BackgroundPerPartitionConsumer<User>>();
             //services.AddTransient<IHostedService>(sp => sp.GetRequiredService<BackgroundPerPartitionConsumer<User>>());
             services.AddTransient<BackgroundPerPartitionConsumer>();
-            services.AddHostedService<BackgroundPerPartitionConsumer1>();
             services.AddSingleton<IHostedService>(sp => sp.GetRequiredService<BackgroundPerPartitionConsumer>());
             services.AddSingleton<IHostedService>(sp => sp.GetRequiredService<BackgroundPerPartitionConsumer>());
             services.AddSingleton<IHostedService>(sp => sp.GetRequiredService<BackgroundPerPartitionConsumer>());
