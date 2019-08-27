@@ -7,13 +7,19 @@ namespace Algorithms
     {
         static void Main(string[] args)
         {
-            var result = Arrays.pascalTriangle(5);
-
-            foreach (var list in result)
+            var list = new List<List<int>>()
             {
-                foreach (var item in list)
+                new List<int>() { 1, 2, 3},
+                new List<int>() { 4, 5, 6},
+                new List<int>() { 7, 8, 9},
+            };
+
+            var result = Arrays.antiDiagonal(list);
+            foreach (var diag in result)
+            {
+                foreach (var val in diag)
                 {
-                   Console.Write(item + " "); 
+                    Console.Write(val + " ");
                 }
                 Console.WriteLine();
             }

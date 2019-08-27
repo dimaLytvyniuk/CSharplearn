@@ -87,5 +87,44 @@ namespace Algorithms
 
             return result;
         }
+
+        public static List<List<int>> antiDiagonal(List<List<int>> A)
+        {
+            var result = new List<List<int>>();
+
+            for (var i = 0; i < A.Count; i++)
+            {
+                var diag = new List<int>();
+                var first = 0;
+                var second = i;
+
+                while (second >= 0 && first < A.Count)
+                {
+                    diag.Add(A[first][second]);
+                    first++;
+                    second--;
+                }
+                
+                result.Add(diag);
+            }
+            
+            for (var i = 1; i < A.Count; i++)
+            {
+                var diag = new List<int>();
+                var first = i;
+                var second = A.Count - 1;
+
+                while (second >= 0 && first < A.Count)
+                {
+                    diag.Add(A[first][second]);
+                    first++;
+                    second--;
+                }
+                
+                result.Add(diag);
+            }
+
+            return result;
+        }
     }
 }
