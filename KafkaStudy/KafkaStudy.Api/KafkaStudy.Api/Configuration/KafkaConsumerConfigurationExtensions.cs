@@ -6,7 +6,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace KafkaStudy.Api.Configuration
 {
-    public static class KafkaConsumerConfigurationExtensions
+    internal static class KafkaConsumerConfigurationExtensions
     {
         public static IServiceCollection AddKafkaConsumer(
             this IServiceCollection services,
@@ -18,36 +18,14 @@ namespace KafkaStudy.Api.Configuration
             if (optionsBuilderAction == null)
                 throw new ArgumentNullException(nameof(optionsBuilderAction));
 
-            var optionsBuilder = new KafkaConsumerOptionsBuilder();
+            var optionsBuilder = new KafkaConsumerOptionsBuilder(services);
             optionsBuilderAction(optionsBuilder);
-
-            AddConsumerFactory(services, optionsBuilder);
+            
             AddBackgroundConsumers(services, optionsBuilder);
 
             return services;
         }
 
-        private static void AddConsumerFactory(
-            IServiceCollection services,
-            IKafkaConsumerOptionsBuilder optionsBuilder)
-        {
-            services.AddTransient<IKafkaMessageConsumerFactory>(sp =>
-            {
-                var consumerFactory = sp.GetService<IKafkaMessageConsumerFactory>();
-
-                if (consumerFactory == null)
-                {
-                    consumerFactory = new KafkaMessageConsumerFactory(sp, optionsBuilder.TopicConsumerTypes);
-                }
-                else
-                {
-                    consumerFactory.AddTopicConsumerTypes(optionsBuilder.TopicConsumerTypes);
-                }
-
-                return consumerFactory;
-            });
-        }
-        
         private static void AddBackgroundConsumers(
             IServiceCollection services,
             IKafkaConsumerOptionsBuilder optionsBuilder)
@@ -58,7 +36,7 @@ namespace KafkaStudy.Api.Configuration
             {
                 services.AddSingleton<IHostedService>(sp =>
                 {
-                    var consumerFactory = sp.GetRequiredService<IKafkaMessageConsumerFactory>();
+                    var consumerFactory = new KafkaMessageConsumerFactory(sp, optionsBuilder.TopicConsumerTypes);
                     var backGroundPerPartitionConsumer = new BackgroundPerPartitionConsumer(consumerFactory, topicsNames);
                     return backGroundPerPartitionConsumer;
                 });

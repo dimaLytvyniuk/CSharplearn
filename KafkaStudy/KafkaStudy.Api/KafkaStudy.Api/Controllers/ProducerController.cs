@@ -21,6 +21,7 @@ namespace KafkaStudy.Api.Controllers
                 var message = new User(){ Id = Guid.NewGuid(), MessageKey = "val"};
                 var result = await _kafkaProducer.Produce("my-topic", message);
                 var result1 = await _kafkaProducer.Produce("my-second-topic", message);
+                var result3 = await _kafkaProducer.Produce(message);
             }
 
             return Ok();

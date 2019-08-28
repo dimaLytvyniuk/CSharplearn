@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace KafkaStudy.Api.Configuration
 {
@@ -7,10 +9,12 @@ namespace KafkaStudy.Api.Configuration
     {
         private int _partitionCount = 1;
         private readonly Dictionary<string, Type> _topicConsumerTypes;
-
-        public KafkaConsumerOptionsBuilder()
+        private readonly IServiceCollection _services;
+        
+        public KafkaConsumerOptionsBuilder(IServiceCollection services)
         {
             _topicConsumerTypes = new Dictionary<string, Type>();
+            _services = services;
         }
         
         public int PartitionCount
@@ -29,13 +33,16 @@ namespace KafkaStudy.Api.Configuration
         
         public void AddTopic<T>()
         {
-            var messageType = typeof(T);
-            _topicConsumerTypes.Add(messageType.FullName, typeof(KafkaMessageConsumer<T>));
+            var topicName = typeof(T).FullName;
+            AddTopic<T>(topicName);
         }
 
         public void AddTopic<T>(string topicName)
         {
             _topicConsumerTypes.Add(topicName, typeof(KafkaMessageConsumer<T>));
+            
+            _services.TryAddTransient<IKafkaMessageConsumer, KafkaMessageConsumer<T>>();
+            _services.TryAddTransient<KafkaMessageConsumer<T>>();
         }
     }
 }
