@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Confluent.Kafka;
-using Microsoft.Extensions.Configuration;
+using KafkaStudy.Api.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace KafkaStudy.Api
 {
@@ -8,15 +9,13 @@ namespace KafkaStudy.Api
     {
         private IProducer<Null, T> _producer;
         private string _topicName;
-        
-        public KafkaProducer(IConfiguration configuration, string topicName): this(configuration)
-        {
-            _topicName = topicName;
-        }
+        private KafkaConfiguration _configuration;
 
-        public KafkaProducer(IConfiguration globalconf)
+        public KafkaProducer(IOptions<KafkaConfiguration> configuration)
         {
-            var config = new ProducerConfig { BootstrapServers = "localhost:9092" };
+            _configuration = configuration.Value;
+
+            var config = new ProducerConfig { BootstrapServers = _configuration.ConnectionString };
 
             _producer = new ProducerBuilder<Null, T>(config)
                 .SetValueSerializer(new ProtobufSerializer<T>())

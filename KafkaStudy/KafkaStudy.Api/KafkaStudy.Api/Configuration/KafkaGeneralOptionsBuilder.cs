@@ -20,14 +20,6 @@ namespace KafkaStudy.Api.Configuration
             _services.AddKafkaConsumer(optionsBuilderAction);
         }
 
-        public void AddProducers(Action<IKafkaProducersOptionsBuilder> optionsBuilderAction)
-        {
-            if (optionsBuilderAction == null)
-                throw new ArgumentNullException(nameof(optionsBuilderAction));
-
-            _services.AddKafkaProducers(optionsBuilderAction);
-        }
-
         public void UseProtoBufSerializer()
         {
             _services.AddSingleton(typeof(IMessageSerializer<>), typeof(ProtobufSerializer<>));
