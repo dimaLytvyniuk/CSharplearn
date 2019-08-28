@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 namespace Algorithms
 {
@@ -123,6 +124,80 @@ namespace Algorithms
                 
                 result.Add(diag);
             }
+
+            return result;
+        }
+        
+        public List<int> getPascalRow(int A) {
+            if (A == 0)
+                return new List<int>{1};
+        
+            var outArray = new List<int>(Enumerable.Range(0, A + 1));
+            outArray[0] = 1;
+            outArray[1] = 1;
+            int lastElementIndex = 1;
+        
+            for(int i = 1; i < A; i ++)
+            {
+                outArray[lastElementIndex + 1] = outArray[lastElementIndex];
+                for (int j = lastElementIndex; j > 0; j --)
+                {
+                    outArray[j] = outArray [j] + outArray[j - 1];
+                }
+                lastElementIndex++;
+            }
+        
+            return outArray;
+        }
+        
+        public static List<int> maxNonNegativeSubarray(List<int> A) {
+            var currentFirstIndex = -1;
+            long currentSum = 0;
+            long currentMaxSum = -1;
+            var currentMaxFirstIndex = -1;
+            var currentMaxLen = 0;
+            
+            for (var i = 0; i < A.Count; i++)
+            {
+                if (A[i] < 0)
+                {
+                    if (currentFirstIndex != -1)
+                    {
+                        var currentLen = i - currentFirstIndex;
+                        if (currentMaxSum < currentSum || (currentSum == currentMaxSum && currentLen > currentMaxLen))
+                        {
+                            currentMaxSum = currentSum;
+                            currentMaxLen = currentLen;
+                            currentMaxFirstIndex = currentFirstIndex;
+                        }
+
+                        currentFirstIndex = -1;
+                        currentSum = 0;
+                    }
+                }
+                else
+                {
+                    if (currentFirstIndex == -1)
+                        currentFirstIndex = i;
+                    currentSum += A[i];
+                }
+            }
+
+            if (currentFirstIndex != -1)
+            {
+                var currentLen = A.Count - currentFirstIndex;
+                if (currentMaxSum < currentSum || (currentSum == currentMaxSum && currentLen > currentMaxLen))
+                {
+                    currentMaxSum = currentSum;
+                    currentMaxLen = currentLen;
+                    currentMaxFirstIndex = currentFirstIndex;
+                }
+            }
+            
+            if (currentMaxFirstIndex == -1)
+                return new List<int>();
+
+            var result = A.GetRange(currentMaxFirstIndex, currentMaxLen);
 
             return result;
         }

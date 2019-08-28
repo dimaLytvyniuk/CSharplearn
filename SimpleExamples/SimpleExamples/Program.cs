@@ -6,7 +6,7 @@ namespace SimpleExamples
     {
         static void Main(string[] args)
         {
-            CovarianceContravariance.DoDemo();
+            DynamicExamples.DoDemo();
         }
     }
 }
