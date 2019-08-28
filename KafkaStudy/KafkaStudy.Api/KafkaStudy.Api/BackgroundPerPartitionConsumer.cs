@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Confluent.Kafka;
+using KafkaStudy.Api.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 
@@ -10,14 +11,19 @@ namespace KafkaStudy.Api
 {
     internal class BackgroundPerPartitionConsumer: BackgroundService
     {
+        private readonly KafkaConfiguration _configuration;
         private readonly IKafkaMessageConsumerFactory _consumerFactory;
         private readonly IReadOnlyList<string> _subscribedTopics;
         
         private static int ConsumerCount = 0;
         private int ConumerId;
         
-        public BackgroundPerPartitionConsumer(IKafkaMessageConsumerFactory consumerFactory, IReadOnlyList<string> subscribedTopics)
+        public BackgroundPerPartitionConsumer(
+            KafkaConfiguration configuration,
+            IKafkaMessageConsumerFactory consumerFactory, 
+            IReadOnlyList<string> subscribedTopics)
         {
+            _configuration = configuration;
             _consumerFactory = consumerFactory;
             _subscribedTopics = subscribedTopics;
             ConsumerCount++;
@@ -28,8 +34,8 @@ namespace KafkaStudy.Api
         {
             var conf = new ConsumerConfig
             { 
-                GroupId = "test-consumer-group",
-                BootstrapServers = "localhost:9092",
+                GroupId = _configuration.GroupId,
+                BootstrapServers = _configuration.ConnectionString,
                 // Note: The AutoOffsetReset property determines the start offset in the event
                 // there are not yet any committed offsets for the consumer group for the
                 // topic/partitions of interest. By default, offsets are committed

@@ -11,14 +11,14 @@ namespace KafkaStudy.Api
         private string _topicName;
         private KafkaConfiguration _configuration;
 
-        public KafkaProducer(IOptions<KafkaConfiguration> configuration)
+        public KafkaProducer(IOptions<KafkaConfiguration> configuration, IMessageSerializer<T> serializer)
         {
             _configuration = configuration.Value;
 
             var config = new ProducerConfig { BootstrapServers = _configuration.ConnectionString };
 
             _producer = new ProducerBuilder<Null, T>(config)
-                .SetValueSerializer(new ProtobufSerializer<T>())
+                .SetValueSerializer(serializer)
                 .Build();
 
             _topicName = typeof(T).FullName;

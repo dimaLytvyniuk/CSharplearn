@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace KafkaStudy.Api.Configuration
 {
@@ -36,8 +37,9 @@ namespace KafkaStudy.Api.Configuration
             {
                 services.AddSingleton<IHostedService>(sp =>
                 {
+                    var kafkaConfiguration = sp.GetRequiredService<IOptions<KafkaConfiguration>>().Value;
                     var consumerFactory = new KafkaMessageConsumerFactory(sp, optionsBuilder.TopicConsumerTypes);
-                    var backGroundPerPartitionConsumer = new BackgroundPerPartitionConsumer(consumerFactory, topicsNames);
+                    var backGroundPerPartitionConsumer = new BackgroundPerPartitionConsumer(kafkaConfiguration, consumerFactory, topicsNames);
                     return backGroundPerPartitionConsumer;
                 });
             }

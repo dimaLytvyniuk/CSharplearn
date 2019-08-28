@@ -6,7 +6,7 @@ using SerializationContext = Confluent.Kafka.SerializationContext;
 
 namespace KafkaStudy.Api
 {
-    public class ProtobufSerializer<T>: ISerializer<T>, IDeserializer<T>, IMessageSerializer<T>
+    public class ProtobufSerializer<T>: IMessageSerializer<T>
     {
         public byte[] Serialize(T data, SerializationContext context)
         {
