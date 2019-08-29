@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using KafkaStudy.Api.ErrorHandling;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -39,7 +39,8 @@ namespace KafkaStudy.Api.Configuration
                 {
                     var kafkaConfiguration = sp.GetRequiredService<IOptions<KafkaConfiguration>>().Value;
                     var consumerFactory = new KafkaMessageConsumerFactory(sp, optionsBuilder.TopicConsumerTypes);
-                    var backGroundPerPartitionConsumer = new BackgroundPerPartitionConsumer(kafkaConfiguration, consumerFactory, topicsNames);
+                    var deadLetterMessagesProducer = sp.GetRequiredService<IDeadLetterMessagesProducer>();
+                    var backGroundPerPartitionConsumer = new BackgroundPerPartitionConsumer(kafkaConfiguration, consumerFactory, deadLetterMessagesProducer, topicsNames);
                     return backGroundPerPartitionConsumer;
                 });
             }

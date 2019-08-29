@@ -24,10 +24,11 @@ namespace KafkaStudy.Api
             _serializer = serializer;
         }
         
-        public async Task ConsumeAsync(byte[] data)
+        public async Task<KafkaConsumerResultModel> ConsumeAsync(byte[] data)
         {
-            var message = _serializer.Deserialize(data);
+            T message = _serializer.Deserialize(data);
             
+            var exception = default(Exception);
             foreach (var handler in _handlers)
             {
                 for (int i = 0; i < RETRY_COUNT; i++)
@@ -35,15 +36,18 @@ namespace KafkaStudy.Api
                     try
                     {
                         await OnMessageAsync(handler, message);
-                        return;
+                        return KafkaConsumerResultModel.GetSuccessfulResultModel();
                     }
                     catch (Exception ex)
                     {
-                        //Log.Error($"Exception {ex}");
+                        exception = ex;
+                        //Log.Error($"Retry message {typeof(T).Name}. Retry count {i + 1}. Exception {ex}");
                         await Task.Delay(RETRY_TIMEOUT);
                     }   
                 }
             }
+            
+            return KafkaConsumerResultModel.GetFailedResultModel(message, exception);
         }
         
         private async Task OnMessageAsync<KHandler>(KHandler handler, T message) where KHandler: IKafkaMessageHandler<T>

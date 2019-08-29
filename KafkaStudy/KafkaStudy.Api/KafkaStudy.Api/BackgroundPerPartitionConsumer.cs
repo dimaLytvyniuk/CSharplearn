@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Confluent.Kafka;
 using KafkaStudy.Api.Configuration;
+using KafkaStudy.Api.ErrorHandling;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 
@@ -14,17 +15,20 @@ namespace KafkaStudy.Api
         private readonly KafkaConfiguration _configuration;
         private readonly IKafkaMessageConsumerFactory _consumerFactory;
         private readonly IReadOnlyList<string> _subscribedTopics;
+        private readonly IDeadLetterMessagesProducer _deadLetterMessagesProducer;
         
         private static int ConsumerCount = 0;
         private int ConumerId;
         
         public BackgroundPerPartitionConsumer(
             KafkaConfiguration configuration,
-            IKafkaMessageConsumerFactory consumerFactory, 
+            IKafkaMessageConsumerFactory consumerFactory,
+            IDeadLetterMessagesProducer deadLetterMessagesProducer,
             IReadOnlyList<string> subscribedTopics)
         {
             _configuration = configuration;
             _consumerFactory = consumerFactory;
+            _deadLetterMessagesProducer = deadLetterMessagesProducer;
             _subscribedTopics = subscribedTopics;
             ConsumerCount++;
             ConumerId = ConsumerCount;
@@ -66,7 +70,12 @@ namespace KafkaStudy.Api
                             
                             Log.Error($"First topic {ConumerId} {cr.Topic}");
                             var consumer = _consumerFactory.GetMessageConsumer(cr.Topic);
-                            await consumer.ConsumeAsync(cr.Value);
+                            var consumerResult = await consumer.ConsumeAsync(cr.Value);
+                            if (!consumerResult.IsSuccessful)
+                            {
+                                await _deadLetterMessagesProducer.Produce(cr.Topic, consumerResult.ErrorMessage);
+                            }
+                            
                             Log.Error($"End First topic {ConumerId} {cr.Value.Length}");
                         }
                         catch (ConsumeException e)
@@ -75,8 +84,9 @@ namespace KafkaStudy.Api
                         }
                     }
                 }
-                catch (OperationCanceledException)
+                catch (Exception ex)
                 {
+                    Log.Error($"Failed consumer {ex}");
                     // Ensure the consumer leaves the group cleanly and final offsets are committed.
                     c.Close();
                 }

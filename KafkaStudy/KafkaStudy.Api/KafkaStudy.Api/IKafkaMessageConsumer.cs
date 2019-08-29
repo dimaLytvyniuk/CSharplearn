@@ -4,6 +4,6 @@ namespace KafkaStudy.Api
 {
     public interface IKafkaMessageConsumer
     {
-        Task ConsumeAsync(byte[] message);
+        Task<KafkaConsumerResultModel> ConsumeAsync(byte[] message);
     }
 }

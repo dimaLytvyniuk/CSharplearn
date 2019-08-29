@@ -1,4 +1,5 @@
 using System;
+using KafkaStudy.Api.ErrorHandling;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,6 +20,7 @@ namespace KafkaStudy.Api.Configuration
 
             services.Configure<KafkaConfiguration>(configuration.GetSection("Kafka"));
             services.AddSingleton(typeof(IKafkaProducer<>), typeof(KafkaProducer<>));
+            services.AddSingleton<IDeadLetterMessagesProducer, DeadLetterMessagesProducer>();
             
             var options = new KafkaGeneralOptionsBuilder(services);
             optionsBuilderAction(options);
