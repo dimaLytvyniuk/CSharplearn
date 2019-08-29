@@ -24,5 +24,10 @@ namespace KafkaStudy.Api.Configuration
         {
             _services.AddSingleton(typeof(IMessageSerializer<>), typeof(ProtobufSerializer<>));
         }
+
+        public void UseStringSerializer()
+        {
+            _services.AddSingleton(typeof(IMessageSerializer<>), typeof(StringSerializer));
+        }
     }
 }

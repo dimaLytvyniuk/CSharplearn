@@ -7,5 +7,6 @@ namespace KafkaStudy.Api.Configuration
     {
         void AddConsumer(Action<IKafkaConsumerOptionsBuilder> optionsBuilderAction);
         void UseProtoBufSerializer();
+        void UseStringSerializer();
     }
 }
