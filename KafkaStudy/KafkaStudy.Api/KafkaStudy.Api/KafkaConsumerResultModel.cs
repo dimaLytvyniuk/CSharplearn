@@ -1,10 +1,9 @@
 using System;
-using System.Threading.Tasks;
 using KafkaStudy.Api.ErrorHandling;
 
 namespace KafkaStudy.Api
 {
-    public class KafkaConsumerResultModel
+    internal class KafkaConsumerResultModel
     {
         public bool IsSuccessful { get; }
         public KafkaErrorMessage ErrorMessage { get; }

@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 namespace KafkaStudy.Api
 {
-    public interface IKafkaMessageConsumer
+    internal interface IKafkaMessageConsumer
     {
         Task<KafkaConsumerResultModel> ConsumeAsync(byte[] message);
     }

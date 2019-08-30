@@ -2,13 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Confluent.Kafka;
 using Microsoft.Extensions.DependencyInjection;
-using Serilog;
 
 namespace KafkaStudy.Api
 {
-    public class KafkaMessageConsumer<T>: IKafkaMessageConsumer
+    internal class KafkaMessageConsumer<T>: IKafkaMessageConsumer
     {
         private const int RETRY_COUNT = 3;
         private const int RETRY_TIMEOUT = 500;

@@ -3,7 +3,6 @@ using Confluent.Kafka;
 using KafkaStudy.Api.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using Serilog;
 
 namespace KafkaStudy.Api.ErrorHandling
 {
