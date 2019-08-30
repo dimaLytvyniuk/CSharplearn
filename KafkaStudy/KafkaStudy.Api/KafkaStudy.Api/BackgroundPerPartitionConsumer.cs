@@ -16,9 +16,9 @@ namespace KafkaStudy.Api
         private readonly IKafkaMessageConsumerFactory _consumerFactory;
         private readonly IReadOnlyList<string> _subscribedTopics;
         private readonly IDeadLetterMessagesProducer _deadLetterMessagesProducer;
-        
-        private static int ConsumerCount = 0;
-        private int ConumerId;
+
+        private static int consumerCount = 0;
+        private int consumerId;
         
         public BackgroundPerPartitionConsumer(
             KafkaConfiguration configuration,
@@ -30,8 +30,9 @@ namespace KafkaStudy.Api
             _consumerFactory = consumerFactory;
             _deadLetterMessagesProducer = deadLetterMessagesProducer;
             _subscribedTopics = subscribedTopics;
-            ConsumerCount++;
-            ConumerId = ConsumerCount;
+
+            consumerCount++;
+            consumerId++;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -68,15 +69,13 @@ namespace KafkaStudy.Api
                         {
                             var cr = c.Consume(cts.Token);
                             
-                            Log.Error($"First topic {ConumerId} {cr.Topic}");
+                            Log.Information($"Consuming message from {cr.Topic}. Partition {cr.Partition.Value}. ConsumerId {consumerId}");
                             var consumer = _consumerFactory.GetMessageConsumer(cr.Topic);
                             var consumerResult = await consumer.ConsumeAsync(cr.Value);
                             if (!consumerResult.IsSuccessful)
                             {
                                 await _deadLetterMessagesProducer.Produce(cr.Topic, consumerResult.ErrorMessage);
                             }
-                            
-                            Log.Error($"End First topic {ConumerId} {cr.Value.Length}");
                         }
                         catch (ConsumeException e)
                         {
