@@ -201,5 +201,28 @@ namespace Algorithms
 
             return result;
         }
+        
+        public static int maximumGap(List<int> A)
+        {
+            var i = 0;
+            var j = A.Count - 1;
+
+            while ( j >= 0)
+            {
+                var maxD = A.Count - i - 1;
+                for (var k = A.Count - 1; k >= j; k--)
+                {
+                    if (A[k - maxD] <= A[k])
+                    {
+                        return maxD;
+                    }
+                }
+                
+                j--;
+                i++;
+            }
+            
+            return -1;
+        }
     }
 }
