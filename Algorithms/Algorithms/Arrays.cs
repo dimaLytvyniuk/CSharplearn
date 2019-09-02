@@ -224,5 +224,64 @@ namespace Algorithms
             
             return -1;
         }
+        
+        public static List<int> wave(List<int> A) {
+            for (var i = 1; i < A.Count; i += 2)
+            {
+                var minIndex = GetMinIndex(i - 1, A);
+                Swap(minIndex, i, A);
+
+                var nextMinIndex = GetMinIndex(i + 1, i - 1, A);
+                Swap(nextMinIndex, i - 1, A);
+            }
+
+            return A;
+        }
+
+        public static List<int> waveQuicker(List<int> A)
+        {
+            A.Sort();
+
+            for (var i = 0; i < A.Count - 1; i += 2)
+            {
+                var temp = A[i];
+                A[i] = A[i + 1];
+                A[i + 1] = temp;
+            }
+
+            return A;
+        }
+        
+        private static int GetMinIndex(int start, List<int> list)
+        {
+            var min = start;
+            for (var i = start + 1; i < list.Count; i++)
+            {
+                if (list[min] > list[i])
+                    min = i;
+            }
+
+            return min;
+        }
+
+        private static int GetMinIndex(int start, int firstIndex, List<int> list)
+        {
+            var min = firstIndex;
+
+            for (var i = start; i < list.Count; i++)
+            {
+                if (list[min] > list[i])
+                    min = i;
+            }
+            
+            return min;
+        }
+        
+        private static void Swap(int firstIndex, int secondIndex, List<int> list)
+        {
+            var temp = list[firstIndex];
+            list[firstIndex] = list[secondIndex];
+            list[secondIndex] = temp;
+        }
     }
 }

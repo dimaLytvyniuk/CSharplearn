@@ -11,9 +11,13 @@ namespace Algorithms
             var val1 = 4_894_672;
             var val2 = 16_962_742;
             
-            var list = new List<int> { 10 };
-            var result = Arrays.maximumGap(list);
-            Console.WriteLine(result);
+            var list = new List<int> { 5, 1, 3, 2, 4 };
+            var result = Arrays.wave(list);
+
+            foreach (var res in result)
+            {
+                Console.WriteLine(res);   
+            }
         }
     }
 }
