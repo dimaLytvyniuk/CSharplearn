@@ -283,5 +283,72 @@ namespace Algorithms
             list[firstIndex] = list[secondIndex];
             list[secondIndex] = temp;
         }
+        
+        public static int[] TwoSum(int[] nums, int target) {
+            var valueIndexDictionary = new Dictionary<int, int>();
+            for (var i = 0; i < nums.Length; i++)
+            {
+                valueIndexDictionary[i] = nums[i];
+            }
+            
+            var dictionaryList = valueIndexDictionary.OrderBy(x => x.Value).ToArray();
+
+            for (var i = 0; i < nums.Length - 1; i++)
+            {
+                var subtraction = target - dictionaryList[i].Value;
+                var subtractionIndex = BinarySearch(dictionaryList, subtraction, i + 1);
+                if (subtractionIndex != -1)
+                {
+                    return new[] {dictionaryList[i].Key, dictionaryList[subtractionIndex].Key};
+                }
+            }
+
+            return Array.Empty<int>();
+        }
+
+        private static int BinarySearch(KeyValuePair<int, int>[] nums, int target, int startIndexSearch)
+        {
+            var left = startIndexSearch;
+            var right = nums.Length - 1;
+
+            while (left <= right)
+            {
+                var mid = (right + left) / 2;
+                
+                if (nums[mid].Value == target)
+                {
+                    return mid;
+                }
+
+                if (nums[mid].Value < target)
+                {
+                    left = mid + 1;
+                }
+                else
+                {
+                    right = mid - 1;
+                }
+            }
+            
+            return -1;
+        }
+        
+        public int[] TwoSumFastSolution(int[] nums, int target) {
+            Dictionary<int, int> dict = new Dictionary<int, int>();
+            for(int i = 0; i < nums.Length; i++) {
+                if(dict.ContainsKey(target - nums[i])) {
+                    return new int[] {dict[target - nums[i]], i};
+                }
+                else {
+                    if(dict.ContainsKey(nums[i])) {
+                        dict[nums[i]] = i;
+                    }
+                    else {
+                        dict.Add(nums[i], i);
+                    }
+                }
+            }
+            return null;
+        }
     }
 }
