@@ -350,5 +350,51 @@ namespace Algorithms
             }
             return null;
         }
+        
+        public static int Reverse(int x)
+        {
+            var endMultiplier = 1;
+            if (x < 0)
+            {
+                try
+                {
+                    checked
+                    {
+                        x *= -1;   
+                    }
+                }
+                catch (OverflowException)
+                {
+                    return 0;
+                }
+                endMultiplier = -1;
+            }
+            
+            var reminder = x % 10;
+            var integer = x / 10;
+            var result = reminder;
+
+            while (integer > 0)
+            {
+                reminder = integer % 10;
+                integer /= 10;
+                try
+                {
+                    checked
+                    {
+                        result *= 10;
+                        result += reminder;   
+                    }
+                }
+                catch (OverflowException)
+                {
+                    return 0;
+                }
+            }
+
+            result *= endMultiplier;
+
+            return result;
+        }
     }
 }

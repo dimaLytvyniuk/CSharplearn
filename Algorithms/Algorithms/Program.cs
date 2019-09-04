@@ -8,13 +8,8 @@ namespace Algorithms
     {
         static void Main(string[] args)
         {
-            var array = new[] {0, 4, 3, 0};
-
-            var result = Arrays.TwoSum(array, 0);
-            foreach (var res in result)
-            {
-                Console.WriteLine(res);   
-            }
+            var result = Arrays.Reverse(-2147483648);
+            Console.WriteLine(result);
         }
     }
 }
