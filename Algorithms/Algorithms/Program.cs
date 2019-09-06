@@ -8,8 +8,9 @@ namespace Algorithms
     {
         static void Main(string[] args)
         {
-            var result = Arrays.Reverse(-2147483648);
-            Console.WriteLine(result);
+            var array = new int[] { 1, 8, 6, 2, 5, 4, 8, 3, 7 };
+            var result = Arrays.MaxArea(array);
+            Console.WriteLine(result); 
         }
     }
 }

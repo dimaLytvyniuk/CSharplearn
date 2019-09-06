@@ -396,5 +396,37 @@ namespace Algorithms
 
             return result;
         }
+        
+        public static int MaxArea(int[] height)
+        {
+            var maxSquere = -1;
+
+            for (var i = 0; i < height.Length - 1; i++)
+            {
+                for (var j = i + 1; j < height.Length; j++)
+                {
+                    var minHeight = Math.Min(height[i], height[j]);
+                    var currentSquare = minHeight * (j - i);
+                    if (currentSquare > maxSquere)
+                    {
+                        maxSquere = currentSquare;
+                    }
+                }
+            }
+
+            return maxSquere;
+        }
+        
+        public static int maxAreaTheBestPerformance(int[] height) {
+            int maxarea = 0, l = 0, r = height.Length - 1;
+            while (l < r) {
+                maxarea = Math.Max(maxarea, Math.Min(height[l], height[r]) * (r - l));
+                if (height[l] < height[r])
+                    l++;
+                else
+                    r--;
+            }
+            return maxarea;
+        }
     }
 }
