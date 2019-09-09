@@ -428,5 +428,23 @@ namespace Algorithms
             }
             return maxarea;
         }
+        
+        public static int repeatedNumber(List<int> A) {
+            var set = new HashSet<int>();
+
+            foreach (var item in A)
+            {
+                if (set.Contains(item))
+                {
+                    return item;
+                }
+                else
+                {
+                    set.Add(item);
+                }
+            }
+
+            return -1;
+        }
     }
 }

@@ -8,8 +8,8 @@ namespace Algorithms
     {
         static void Main(string[] args)
         {
-            var array = new int[] { 1, 8, 6, 2, 5, 4, 8, 3, 7 };
-            var result = Arrays.MaxArea(array);
+            var list = new List<int>() { 3, 4, 1, 4, 1 };
+            var result = Arrays.repeatedNumber(list);
             Console.WriteLine(result); 
         }
     }
