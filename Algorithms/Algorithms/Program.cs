@@ -8,9 +8,9 @@ namespace Algorithms
     {
         static void Main(string[] args)
         {
-            var list = new List<int>() { 3, 4, 1, 4, 1 };
-            var result = Arrays.repeatedNumber(list);
-            Console.WriteLine(result); 
+            var roman = SpecificAlgorithms.IntToRoman(2991);
+            
+            Console.WriteLine(roman); 
         }
     }
 }
