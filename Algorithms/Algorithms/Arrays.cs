@@ -446,5 +446,31 @@ namespace Algorithms
 
             return -1;
         }
+        
+        public static int nobleInteger(List<int> A)
+        {
+            A.Sort();
+            var index = 0;
+            while (index < A.Count)
+            {
+                var currentNumber = A[index];
+                var sameElemCount = 0;
+                while ((index + sameElemCount + 1) < A.Count && A[index + sameElemCount + 1] == currentNumber)
+                {
+                    sameElemCount++;
+                }
+
+                index += sameElemCount;
+                var greaterNumbersCount = A.Count - 1 - index;
+                if (greaterNumbersCount == currentNumber)
+                {
+                    return 1;
+                }
+
+                index++;
+            }
+
+            return -1;
+        }
     }
 }

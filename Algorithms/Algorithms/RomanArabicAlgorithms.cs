@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Algorithms
 {
-    public class SpecificAlgorithms
+    public class RomanArabicAlgorithms
     {
         public static string IntToRoman(int num)
         {
@@ -17,10 +18,26 @@ namespace Algorithms
             roman += hundreadResult.roman;
             roman += tenResult.roman;
             roman += oneResult.roman;
-            
+
             return roman;
         }
 
+        public static int RomanToInt(string s)
+        {
+            var arabian = 0; 
+            var thousandToIntResult = GetPartForRomanRank(s, 1000);
+            var hundreadToIntResult = GetPartForRomanRank(thousandToIntResult.roman, 100);
+            var tenToIntResult = GetPartForRomanRank(hundreadToIntResult.roman, 10);
+            var oneToIntResult = GetPartForRomanRank(tenToIntResult.roman, 1);
+
+            arabian += thousandToIntResult.number;
+            arabian += hundreadToIntResult.number;
+            arabian += tenToIntResult.number;
+            arabian += oneToIntResult.number;
+
+            return arabian;
+        }
+        
         private static (int number, string roman) GetThousandPart(int num)
         {
             var number = num;
@@ -82,6 +99,52 @@ namespace Algorithms
             return (number, roman);
         }
         
+        private static (string roman, int number) GetPartForRomanRank(string str, int rank)
+        {
+            var roman = str;
+            var number = 0;
+            
+            var nineIntRank = 9 * rank;
+            var fiveIntRank = 5 * rank;
+            var fourIntRank = 4 * rank;
+            var tenIntRank = 10 * rank;
+            
+            var nineRomanRank = RomanNumberRepresentation[rank] + RomanNumberRepresentation[tenIntRank];
+            var fiveRomanRank = RomanNumberRepresentation[fiveIntRank];
+            var fourRomanRank = RomanNumberRepresentation[rank] + RomanNumberRepresentation[fiveIntRank];
+            var romanRank = RomanNumberRepresentation[rank];
+            
+            if (roman.StartsWith(nineRomanRank))
+            {
+                roman = roman.Substring(nineRomanRank.Length);
+                number += nineIntRank;
+            }
+            else 
+            {
+                if (roman.StartsWith(fiveRomanRank))
+                {
+                    roman = roman.Substring(fiveRomanRank.Length);
+                    number += fiveIntRank;
+                }
+
+                if (roman.StartsWith(fourRomanRank))
+                {
+                    roman = roman.Substring(fourRomanRank.Length); 
+                    number += fourIntRank;
+                }
+                else
+                {
+                    while (roman.StartsWith(romanRank))
+                    {
+                        roman = roman.Substring(romanRank.Length);
+                        number += rank;
+                    }
+                }
+            }
+            
+            return (roman, number);
+        }
+        
         private static Dictionary<int, string> RomanNumberRepresentation = new Dictionary<int, string>()
         {
             { 1, "I"},
@@ -91,6 +154,8 @@ namespace Algorithms
             { 100, "C" },
             { 500, "D" },
             { 1000, "M" },
+            { 5000, "MMMMM"},
+            { 10000, "MMMMMMMMMMM"}
         };
     }
 }

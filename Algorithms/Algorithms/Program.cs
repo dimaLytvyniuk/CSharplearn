@@ -8,9 +8,9 @@ namespace Algorithms
     {
         static void Main(string[] args)
         {
-            var roman = SpecificAlgorithms.IntToRoman(2991);
+            var arabian = RomanArabicAlgorithms.RomanToInt("MCDLXXVI");
             
-            Console.WriteLine(roman); 
+            Console.WriteLine(arabian); 
         }
     }
 }
