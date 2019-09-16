@@ -472,5 +472,56 @@ namespace Algorithms
 
             return -1;
         }
+        
+        public static int firstMissingPositive(List<int> A)
+        {
+            var result = 1;
+            var set = new HashSet<int>();
+            
+            for (var i = 0; i < A.Count; i++)
+            {
+                set.Add(A[i]);
+                if (A[i] == result)
+                {
+                    result++;
+                    while (true)
+                    {
+                        if (set.Contains(result) && result != Int32.MaxValue)
+                        {
+                            result++;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            return result;
+        }
+        
+        public static int firstMissingPositiveQuickMethod(List<int> A)
+        {
+            var array = new int[A.Count + 1];
+
+            foreach (var val in A)
+            {
+                if (val > 0 && val <= A.Count + 1)
+                {
+                    array[val - 1] = 1;
+                }
+            }
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (array[i] == 0)
+                {
+                    return i + 1;
+                }
+            }
+            
+            return 1;
+        }
     }
 }

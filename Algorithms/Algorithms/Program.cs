@@ -8,9 +8,10 @@ namespace Algorithms
     {
         static void Main(string[] args)
         {
-            var arabian = RomanArabicAlgorithms.RomanToInt("MCDLXXVI");
+            var list = new List<int> { 3, 4, -1, 1};
+            var result = Arrays.firstMissingPositiveQuickMethod(list);
             
-            Console.WriteLine(arabian); 
+            Console.WriteLine(result); 
         }
     }
 }
