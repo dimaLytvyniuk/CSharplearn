@@ -523,5 +523,99 @@ namespace Algorithms
             
             return 1;
         }
+        
+        public static string largestNumber(List<int> A)
+        {
+            var list = A.Select(x => x.ToString()).ToList();
+            list.Sort(CompareByLargestFirstNumber);
+            list.Reverse();
+
+            var result = "";
+            bool wasNumber = false;
+            for (var i = 0; i < list.Count - 1; i++)
+            {
+                if (list[i] != "0")
+                {
+                    wasNumber = true;
+                    result += list[i];
+                }
+                else if (wasNumber)
+                {
+                    result += list[i];
+                }
+            }
+            
+            result += list[list.Count - 1];
+            
+            return result;
+        }
+
+        public static int CompareByLargestFirstNumber(string x, string y)
+        {
+            if (x == null)
+            {
+                if (y == null)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+            else
+            {
+                if (y == null)
+                {
+                    return 1;
+                }
+                else
+                {
+                    if (x.Length == y.Length)
+                    {
+                        return x.CompareTo(y);
+                    }
+                    else
+                    {
+                        if (x.Length > y.Length)
+                        {
+                            int j = 0;
+                            for (var i = 0; i < x.Length; i++)
+                            {
+                                if (x[i] != y[j])
+                                {
+                                    return x[i].CompareTo(y[j]);
+                                }
+
+                                if (j < y.Length - 1)
+                                {
+                                    j++;
+                                }
+                            }
+
+                            return -1;
+                        }
+                        else
+                        {
+                            int j = 0;
+                            for (var i = 0; i < y.Length; i++)
+                            {
+                                if (x[j] != y[i])
+                                {
+                                    return x[j].CompareTo(y[i]);
+                                }
+
+                                if (j < x.Length - 1)
+                                {
+                                    j++;
+                                }
+                            }
+
+                            return 1;
+                        }
+                    }
+                }
+            }
+        }
     }
 }

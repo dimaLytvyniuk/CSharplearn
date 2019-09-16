@@ -8,8 +8,8 @@ namespace Algorithms
     {
         static void Main(string[] args)
         {
-            var list = new List<int> { 3, 4, -1, 1};
-            var result = Arrays.firstMissingPositiveQuickMethod(list);
+            var list = new List<int> { 0, 0, 0, 0, 0 };
+            var result = Arrays.largestNumber(list);
             
             Console.WriteLine(result); 
         }
