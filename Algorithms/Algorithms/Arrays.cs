@@ -617,5 +617,59 @@ namespace Algorithms
                 }
             }
         }
+
+        public static int[,] GetAllVariants(List<int> list)
+        {
+            var countOfVariants = Factorial(list.Count);
+            var result = new int[countOfVariants, list.Count];
+            var circleValues = GetCircleValues(list);
+
+            for (var i = 0; i < list.Count - 1; i++)
+            {
+                //var currentCo = 
+            }
+            
+            return result;
+        }
+
+        public static void AddVariants(int[,] variants, int[,] circleCombinations, int verticalIndex, int horizontalIndex)
+        {
+            var countOfCombinationsVariants = Factorial(variants.GetLength(1) - verticalIndex - 1);
+            
+        }
+        
+        public static int Factorial(int n)
+        {
+            var factorial = 1;
+
+            for (var i = 2; i <= n; i++)
+            {
+                factorial *= i;
+            }
+
+            return factorial;
+        }
+
+        public static int[,] GetCircleValues(List<int> list)
+        {
+            var variants = new int[list.Count, list.Count];
+            for (var i = 0; i < list.Count; i++)
+            {
+                var offset = i;
+
+                for (var j = offset; j < list.Count; j++)
+                {
+                    variants[i, j - offset] = list[j];
+                }
+
+                var leftOffset = list.Count - offset;
+                for (var j = 0; j < offset; j++)
+                {
+                    variants[i, j + leftOffset] = list[j];
+                }
+            }
+
+            return variants;
+        }
     }
 }
