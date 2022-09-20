@@ -1,0 +1,46 @@
+using CookieWebStudy;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Services
+    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options => {
+        options.Cookie.SameSite = SameSiteMode.None;
+        options.Events = new CookieAuthenticationEvents
+        {                          
+            OnRedirectToLogin = redirectContext =>
+            {
+                redirectContext.HttpContext.Response.StatusCode = 401;
+                return Task.CompletedTask;
+            }
+        };                
+    });
+
+builder.Services.AddDbContext<IdentityDbContext>(options =>
+  options.UseSqlServer(builder.Configuration.GetConnectionString("DbServer")));
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseAuthentication();
+
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();
