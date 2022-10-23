@@ -26,7 +26,40 @@ builder.Services
     });
 
 builder.Services.AddDbContext<IdentityDbContext>(options =>
-  options.UseSqlServer(builder.Configuration.GetConnectionString("DbServer")));
+  options
+  .UseSqlServer(builder.Configuration.GetConnectionString("DbServer"))
+  .UseOpenIddict());
+
+builder.Services
+    .AddOpenIddict()
+    .AddCore(options =>
+    {
+        options
+            .UseEntityFrameworkCore()
+            .UseDbContext<IdentityDbContext>();
+    })
+    .AddServer(options =>
+    {
+        options.AllowClientCredentialsFlow();
+
+        options.SetTokenEndpointUris("/connect/token");
+
+        // Encryption and signing of tokens
+        options
+            .AddEphemeralEncryptionKey()
+            .AddEphemeralSigningKey()
+            .DisableAccessTokenEncryption();
+
+        // Register scopes (permissions)
+        options.RegisterScopes("api");
+
+        // Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
+        options
+            .UseAspNetCore()
+            .EnableTokenEndpointPassthrough();
+    });
+
+builder.Services.AddHostedService<OpenIdTestDataSetupHostedService>();
 
 var app = builder.Build();
 
