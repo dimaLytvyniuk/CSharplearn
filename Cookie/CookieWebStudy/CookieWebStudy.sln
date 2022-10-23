@@ -1,6 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CookieWebStudy", "CookieWebStudy\CookieWebStudy.csproj", "{96646D87-8430-4FB4-9159-F88B8C4A47CF}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32901.215
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CookieWebStudy", "CookieWebStudy\CookieWebStudy.csproj", "{96646D87-8430-4FB4-9159-F88B8C4A47CF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityWebStudy", "IdentityWebStudy\IdentityWebStudy.csproj", "{61AB6848-8351-47E2-B996-5CBA1A9D210B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +17,15 @@ Global
 		{96646D87-8430-4FB4-9159-F88B8C4A47CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96646D87-8430-4FB4-9159-F88B8C4A47CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{96646D87-8430-4FB4-9159-F88B8C4A47CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61AB6848-8351-47E2-B996-5CBA1A9D210B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61AB6848-8351-47E2-B996-5CBA1A9D210B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61AB6848-8351-47E2-B996-5CBA1A9D210B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61AB6848-8351-47E2-B996-5CBA1A9D210B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BEC26290-5A12-4637-9D68-61F2C8639D28}
 	EndGlobalSection
 EndGlobal
