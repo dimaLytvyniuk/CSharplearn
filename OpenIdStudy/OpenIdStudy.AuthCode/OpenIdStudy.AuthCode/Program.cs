@@ -41,8 +41,13 @@ builder.Services
     .AddServer(options =>
     {
         options.AllowClientCredentialsFlow();
+        options
+            .AllowAuthorizationCodeFlow()
+            .RequireProofKeyForCodeExchange();
 
-        options.SetTokenEndpointUris("/connect/token");
+        options
+            .SetTokenEndpointUris("/connect/token")
+            .SetAuthorizationEndpointUris("/connect/authorize");
 
         // Encryption and signing of tokens
         options
@@ -56,7 +61,8 @@ builder.Services
         // Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
         options
             .UseAspNetCore()
-            .EnableTokenEndpointPassthrough();
+            .EnableTokenEndpointPassthrough()
+            .EnableAuthorizationEndpointPassthrough();
     });
 
 builder.Services.AddHostedService<OpenIdTestDataSetupHostedService>();

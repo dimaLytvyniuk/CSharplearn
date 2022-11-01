@@ -25,17 +25,23 @@ namespace OpenIdStudy.Identity
                 return;
             }
 
-            await manager.CreateAsync(new OpenIddictApplicationDescriptor
+            await manager.UpdateAsync(new OpenIddictApplicationDescriptor
             {
                 ClientId = "postman",
                 ClientSecret = "postman-secret",
                 DisplayName = "Postman",
+                RedirectUris = { new Uri("https://oauth.pstmn.io/v1/callback") },
                 Permissions =
                 {
+                    OpenIddictConstants.Permissions.Endpoints.Authorization,
                     OpenIddictConstants.Permissions.Endpoints.Token,
+
+                    OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,
                     OpenIddictConstants.Permissions.GrantTypes.ClientCredentials,
 
-                    OpenIddictConstants.Permissions.Prefixes.Scope + "api"
+                    OpenIddictConstants.Permissions.Prefixes.Scope + "api",
+
+                    OpenIddictConstants.Permissions.ResponseTypes.Code
                 }
             }, cancellationToken);
         }
